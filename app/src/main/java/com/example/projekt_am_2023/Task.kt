@@ -1,6 +1,8 @@
 package com.example.projekt_am_2023
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 data class Task(
     var title: String,
@@ -11,4 +13,58 @@ data class Task(
     var Description: String?,
     var subtasks: MutableList<Task>,
     var tags: MutableList<Tag>,
-)
+) {
+    private companion object {
+        var locale: Locale = Locale.getDefault()
+        val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
+        val timeSDF = SimpleDateFormat("HH:MM", locale)
+    }
+
+    private fun getWeekDay(cal: Calendar?): String {
+        return if(cal != null) {
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale)!!
+        } else {
+            ""
+        }
+    }
+
+    fun getStartWeekDay(): String {
+        return getWeekDay(startCalendar)
+    }
+
+    fun getEndWeekDay(): String {
+        return getWeekDay(endCalendar)
+    }
+
+    private fun getDate(cal: Calendar?): String {
+        return if(cal != null) {
+            dateSDF.format(cal.time)
+        } else {
+            ""
+        }
+    }
+
+    fun getStartDate(): String {
+        return getDate(startCalendar)
+    }
+
+    fun getEndDate(): String {
+        return getDate(endCalendar)
+    }
+
+    private fun getTime(cal: Calendar?): String {
+        return if(cal != null) {
+            timeSDF.format(cal.time)
+        } else {
+            ""
+        }
+    }
+
+    fun getStartTime(): String {
+        return getTime(startCalendar)
+    }
+
+    fun getEndTime(): String {
+        return getTime(endCalendar)
+    }
+}
