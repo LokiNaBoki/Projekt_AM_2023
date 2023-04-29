@@ -1,5 +1,6 @@
 package com.example.projekt_am_2023
 
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -13,7 +14,7 @@ data class Task(
     var Description: String?,
     var subtasks: MutableList<Task>,
     var tags: MutableList<Tag>,
-) {
+) : Serializable {
     private companion object {
         var locale: Locale = Locale.getDefault()
         val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
