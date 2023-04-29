@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class TaskView : AppCompatActivity() {
+    inner class NewSubtaskListener() : View.OnClickListener {
+        override fun onClick(view: View?) {
+            Toast.makeText(this@TaskView, "onClick New Subtask", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_view)
@@ -20,6 +27,12 @@ class TaskView : AppCompatActivity() {
         val tagRecycler = findViewById<RecyclerView>(R.id.tagsRecycler)
         tagRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         tagRecycler.adapter = TagAdapter(emptyList())
+
+        val subtasks = findViewById<LinearLayout>(R.id.subtasksRecycler)
+        val tmp = LayoutInflater.from(this).inflate(R.layout.new_element, null, false)
+        tmp.findViewById<TextView>(R.id.newText).text = getString(R.string.addSubtask)
+        tmp.setOnClickListener(NewSubtaskListener())
+        subtasks.addView(tmp)
     }
 
     inner class TagAdapter(private var tags: List<Tag>) : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
