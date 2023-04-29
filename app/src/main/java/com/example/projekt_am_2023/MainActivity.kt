@@ -1,7 +1,6 @@
 package com.example.projekt_am_2023
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import android.os.Bundle
 import android.graphics.Color
 import java.text.SimpleDateFormat
@@ -15,8 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val user1 = User("User 1", ContextCompat.getDrawable(this, R.drawable.user1))
-        val user2 = User("User 2", ContextCompat.getDrawable(this, R.drawable.user2))
+        val user1 = User("User 1", R.drawable.user1)
+        val user2 = User("User 2", R.drawable.user2)
 
         val tag1 = Tag("First", Color.RED)
         val tag2 = Tag("First", Color.BLUE)
