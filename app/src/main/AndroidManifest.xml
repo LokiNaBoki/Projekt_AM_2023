@@ -18,6 +18,9 @@
             android:name=".AddTag"
             android:exported="false" />
         <activity
+            android:name=".TaskView"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
