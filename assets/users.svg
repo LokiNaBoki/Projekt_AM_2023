@@ -27,9 +27,9 @@
      showborder="false"
      borderlayer="false"
      shape-rendering="auto"
-     inkscape:zoom="2.9916667"
-     inkscape:cx="100.27855"
-     inkscape:cy="74.206128"
+     inkscape:zoom="2.1154278"
+     inkscape:cx="216.50467"
+     inkscape:cy="46.326327"
      inkscape:current-layer="svg5">
     <inkscape:page
        x="0"
@@ -43,6 +43,15 @@
        width="108"
        height="108"
        id="page892" />
+    <inkscape:page
+       x="236"
+       y="0"
+       width="108"
+       height="108"
+       id="page439"
+       inkscape:export-filename="Page 3.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -78,6 +87,13 @@
        d="m 53.999978,49.190015 11.92,-23.52 h 13.04 l -18.96,34.88 v 22.24 h -12 v -21.84 l -18.96,-35.28 h 13.12 z"
        id="path1198" />
   </g>
+  <ellipse
+     style="fill:none;stroke:#808080;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10, 10;stroke-dashoffset:0"
+     id="path231-6-3"
+     cx="289.91678"
+     cy="54.043304"
+     rx="51.579777"
+     ry="51.550224" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
@@ -97,5 +113,23 @@
          d="m 80.680007,82.790015 h -13.84 l -13.28,-21.6 -13.28,21.6 h -12.96 l 18.96,-29.44 -17.76,-27.68 h 13.36 l 12.32,20.56 12.08,-20.56 h 13.04 l -17.92,28.32 z"
          id="path1203" />
     </g>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-weight:bold;font-size:80px;line-height:1.5;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';font-variant-ligatures:no-common-ligatures;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:10;stroke-linecap:round;stroke-linejoin:round"
+     x="54.000019"
+     y="-36.63562"
+     id="text686"><tspan
+       sodipodi:role="line"
+       id="tspan684"
+       x="54.000019"
+       y="-36.63562">U</tspan></text>
+  <g
+     aria-label="U"
+     id="text690"
+     style="font-weight:bold;font-size:80px;-inkscape-font-specification:'sans-serif Bold';font-variant-ligatures:no-common-ligatures;text-align:center;text-anchor:middle;fill:#808080;stroke-width:10;stroke-linecap:round;stroke-linejoin:round">
+    <path
+       d="m 313.35679,62.043308 q 0,5.92 -2.64,10.72 -2.56,4.72 -7.84,7.52 -5.2,2.72 -13.2,2.72 -11.36,0 -17.28,-5.76 -5.92,-5.84 -5.92,-15.36 v -36.8 h 12.08 v 34.96 q 0,7.04 2.88,9.92 2.88,2.88 8.56,2.88 5.92,0 8.56,-3.12 2.72,-3.12 2.72,-9.76 v -34.88 h 12.08 z"
+       id="path3808" />
   </g>
 </svg>
