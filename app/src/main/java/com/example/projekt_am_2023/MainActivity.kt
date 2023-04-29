@@ -133,5 +133,12 @@ class MainActivity : AppCompatActivity() {
                 )
             ),
         )
+
+        tasks[0].tasks[0].subtasks.add(tasks[0].tasks[1])
+        tasks[0].tasks[0].subtasks.add(tasks[1].tasks[1])
+
+        tasks[4].tasks[0].subtasks.add(tasks[2].tasks[1])
+        tasks[4].tasks[0].subtasks.add(tasks[3].tasks[1])
+        tasks[4].tasks[0].subtasks.add(tasks[4].tasks[1])
     }
 }
