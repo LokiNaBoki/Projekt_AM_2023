@@ -153,9 +153,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onVertical(view: View) {
-        val i = Intent(this, VerticalList::class.java)
-        i.putIntegerArrayListExtra("items", items)
-        startActivity(i)
+        val fragment = VerticalList.newInstance(items)
+        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment).commit()
     }
 
     fun onAdd(view: View) {

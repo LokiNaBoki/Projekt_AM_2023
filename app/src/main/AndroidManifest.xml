@@ -15,9 +15,6 @@
             android:name=".HorizontalList"
             android:exported="true" />
         <activity
-            android:name=".VerticalList"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
