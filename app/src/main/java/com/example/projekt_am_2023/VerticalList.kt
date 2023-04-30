@@ -13,6 +13,11 @@ private const val ARG_PARAM1 = "items"
 
 class VerticalList : Fragment() {
     private lateinit var items: ArrayList<Int>
+    private lateinit var adapter: Adapter
+
+    public fun notifyAdded(pos: Int) {
+        adapter?.notifyItemInserted(pos)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +27,8 @@ class VerticalList : Fragment() {
         } else {
             arrayListOf()
         }
+
+        adapter = Adapter(items)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +36,7 @@ class VerticalList : Fragment() {
 
         val recycler = view.findViewById<RecyclerView>(R.id.testRecycler)
         recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycler.adapter = Adapter(items)
+        recycler.adapter = adapter
 
         return view
     }

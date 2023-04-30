@@ -51,7 +51,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/testContainer"
-        android:name="com.example.projekt_am_2023.HorizontalList"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"

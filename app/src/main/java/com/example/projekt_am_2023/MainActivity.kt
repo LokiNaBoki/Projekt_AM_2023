@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.FragmentContainerView
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -13,6 +17,8 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
     lateinit var tasks: MutableList<Section>
     private val items: ArrayList<Int> = arrayListOf()
+    private var fragment: Fragment? = null
+    private var horizontal: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,17 +154,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onHorizontal(view: View) {
-        val fragment = HorizontalList.newInstance(items)
-        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment).commit()
+        fragment = HorizontalList.newInstance(items)
+        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment as HorizontalList).commit()
+        horizontal = true
     }
 
     fun onVertical(view: View) {
-        val fragment = VerticalList.newInstance(items)
-        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment).commit()
+        fragment = VerticalList.newInstance(items)
+        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment as VerticalList).commit()
+        horizontal = false
     }
 
     fun onAdd(view: View) {
         items.add(items.size)
         findViewById<TextView>(R.id.textView).text = "Items: ${items.size}"
+
+        if(fragment == null) {
+            return
+        }
+
+        if(horizontal) {
+            (fragment as HorizontalList).notifyAdded(items.size - 1)
+        } else {
+            (fragment as VerticalList).notifyAdded(items.size - 1)
+        }
     }
 }
