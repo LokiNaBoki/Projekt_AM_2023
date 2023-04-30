@@ -1,24 +1,47 @@
 package com.example.projekt_am_2023
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.marginEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class HorizontalList : AppCompatActivity() {
+private const val ARG_PARAM1 = "items"
+
+class HorizontalList : Fragment() {
+    private lateinit var items: ArrayList<Int>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vertical_list)
 
-        val items: ArrayList<Int> = intent.getIntegerArrayListExtra("items") ?: arrayListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        items = if(arguments != null) {
+            requireArguments().getIntegerArrayList(ARG_PARAM1) ?: arrayListOf()
+        } else {
+            arrayListOf()
+        }
+    }
 
-        val recycler = findViewById<RecyclerView>(R.id.testRecycler)
-        recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_horizontal_list, container, false)
+
+        val recycler = view.findViewById<RecyclerView>(R.id.testRecycler)
+        recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recycler.adapter = Adapter(items)
+
+        return view
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(param1: ArrayList<Int>) =
+            HorizontalList().apply {
+                arguments = Bundle().apply {
+                    putIntegerArrayList(ARG_PARAM1, param1)
+                }
+            }
     }
 
     inner class Adapter(private var items: List<Int>) : RecyclerView.Adapter<Adapter.ViewHolder>() {
@@ -31,7 +54,7 @@ class HorizontalList : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            val tv = TextView(this@HorizontalList)
+            val tv = TextView(context)
             tv.id = R.id.itemText
             tv.setPadding(0, 0, 40, 0)
             return ViewHolder(tv)

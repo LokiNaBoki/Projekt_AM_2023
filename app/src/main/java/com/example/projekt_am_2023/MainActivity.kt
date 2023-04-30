@@ -148,9 +148,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onHorizontal(view: View) {
-        val i = Intent(this, HorizontalList::class.java)
-        i.putIntegerArrayListExtra("items", items)
-        startActivity(i)
+        val fragment = HorizontalList.newInstance(items)
+        supportFragmentManager.beginTransaction().replace(R.id.testContainer, fragment).commit()
     }
 
     fun onVertical(view: View) {
