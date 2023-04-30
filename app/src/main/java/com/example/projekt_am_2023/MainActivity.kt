@@ -1,14 +1,18 @@
 package com.example.projekt_am_2023
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.graphics.Color
+import android.view.View
+import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     lateinit var tasks: MutableList<Section>
+    private val items: ArrayList<Int> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,5 +144,23 @@ class MainActivity : AppCompatActivity() {
         tasks[4].tasks[0].subtasks.add(tasks[2].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[3].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[4].tasks[1])
+        findViewById<TextView>(R.id.textView).text = "Items: ${items.size}"
+    }
+
+    fun onHorizontal(view: View) {
+        val i = Intent(this, HorizontalList::class.java)
+        i.putIntegerArrayListExtra("items", items)
+        startActivity(i)
+    }
+
+    fun onVertical(view: View) {
+        val i = Intent(this, VerticalList::class.java)
+        i.putIntegerArrayListExtra("items", items)
+        startActivity(i)
+    }
+
+    fun onAdd(view: View) {
+        items.add(items.size)
+        findViewById<TextView>(R.id.textView).text = "Items: ${items.size}"
     }
 }
