@@ -18,7 +18,7 @@ data class Task(
     private companion object {
         var locale: Locale = Locale.getDefault()
         val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
-        val timeSDF = SimpleDateFormat("HH:MM", locale)
+        val timeSDF = SimpleDateFormat("HH:mm", locale)
     }
 
     private fun getWeekDay(cal: Calendar?): String {

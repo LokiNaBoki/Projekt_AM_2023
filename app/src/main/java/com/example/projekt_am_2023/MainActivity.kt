@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         val tag1 = Tag("First", Color.RED)
         val tag2 = Tag("First", Color.BLUE)
 
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:MM", Locale.getDefault())
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
         tasks = mutableListOf(
             Section(
