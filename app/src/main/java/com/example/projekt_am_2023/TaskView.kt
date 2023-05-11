@@ -181,4 +181,6 @@ class TaskView : Fragment() {
 
         override fun getItemCount() = tags.size + 1
     }
+
+    fun getTask() = task
 }
