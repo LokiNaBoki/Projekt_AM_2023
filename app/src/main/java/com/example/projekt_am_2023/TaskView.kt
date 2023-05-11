@@ -24,7 +24,9 @@ class TaskView : Fragment() {
 
     inner class SubtaskListener(private  val task: Task) : View.OnClickListener, View.OnLongClickListener {
         override fun onClick(view: View?) {
-            Toast.makeText(context, "onClick ${task.title}", Toast.LENGTH_SHORT).show()
+            val i = Intent(context, EditTask::class.java)
+            i.putExtra("task", task)
+            startActivity(i)
         }
 
         override fun onLongClick(view: View?): Boolean {
@@ -35,7 +37,9 @@ class TaskView : Fragment() {
 
     inner class NewSubtaskListener() : View.OnClickListener {
         override fun onClick(view: View?) {
-            Toast.makeText(context, "on new ${task.title}", Toast.LENGTH_SHORT).show()
+            val i = Intent(context, EditTask::class.java)
+            i.putExtra("task", Task.emptyTask())
+            startActivity(i)
         }
     }
 
@@ -45,7 +49,7 @@ class TaskView : Fragment() {
         task = if (arguments != null) {
             requireArguments().getSerializable(ARG_PARAM1) as Task
         } else {
-            Task("", false, null, null, null, null, mutableListOf(), mutableListOf())
+            Task.emptyTask()
         }
     }
 
