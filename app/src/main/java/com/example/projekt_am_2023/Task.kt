@@ -16,9 +16,12 @@ data class Task(
     var tags: MutableList<Tag>,
 ) : Serializable {
     private companion object {
-        var locale: Locale = Locale.getDefault()
-        val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
-        val timeSDF = SimpleDateFormat("HH:mm", locale)
+        private var locale: Locale = Locale.getDefault()
+        private val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
+        private val timeSDF = SimpleDateFormat("HH:mm", locale)
+
+        @JvmStatic
+        fun emptyTask() = Task("", false, null, null, null, null, mutableListOf(), mutableListOf())
     }
 
     private fun getWeekDay(cal: Calendar?): String {
