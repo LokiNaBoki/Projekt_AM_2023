@@ -37,8 +37,7 @@ class TaskView : Fragment() {
 
     inner class NewSubtaskListener() : View.OnClickListener {
         override fun onClick(view: View?) {
-            val i = Intent(context, EditTask::class.java)
-            i.putExtra("task", Task.emptyTask())
+            val i = Intent(context, AddTask::class.java)
             startActivity(i)
         }
     }
