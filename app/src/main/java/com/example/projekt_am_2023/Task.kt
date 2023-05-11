@@ -15,7 +15,7 @@ data class Task(
     var subtasks: MutableList<Task>,
     var tags: MutableList<Tag>,
 ) : Serializable {
-    private companion object {
+    companion object {
         private var locale: Locale = Locale.getDefault()
         private val dateSDF = SimpleDateFormat("yyyy-MM-dd", locale)
         private val timeSDF = SimpleDateFormat("HH:mm", locale)
