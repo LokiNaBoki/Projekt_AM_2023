@@ -1,5 +1,6 @@
 package com.example.projekt_am_2023
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,18 +21,21 @@ import androidx.recyclerview.widget.RecyclerView
 class TaskView : AppCompatActivity() {
     inner class SubtaskListener(private  val task: Task) : View.OnClickListener, View.OnLongClickListener {
         override fun onClick(view: View?) {
-            Toast.makeText(this@TaskView, "onClick ${task.title}", Toast.LENGTH_SHORT).show()
+            val i = Intent(this@TaskView, TaskView::class.java)
+            i.putExtra("task", task)
+            startActivity(i)
         }
 
         override fun onLongClick(view: View?): Boolean {
             Toast.makeText(this@TaskView, "onLongClick ${task.title}", Toast.LENGTH_SHORT).show()
-            return false
+            return true
         }
     }
 
     inner class NewSubtaskListener() : View.OnClickListener {
         override fun onClick(view: View?) {
-            Toast.makeText(this@TaskView, "onClick New Subtask", Toast.LENGTH_SHORT).show()
+            val i = Intent(this@TaskView, TaskView::class.java)
+            startActivity(i)
         }
     }
 
