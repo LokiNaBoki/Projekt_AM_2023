@@ -56,7 +56,7 @@ class TaskView : AppCompatActivity() {
             val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
             val drawable = ContextCompat.getDrawable(this, drawableId)
             findViewById<ImageView>(R.id.userImage).setImageDrawable(drawable)
-            findViewById<TextView>(R.id.userText).text = task.assignee!!.name
+            findViewById<TextView>(R.id.userText).text = task.assignee?.name ?: ""
 
             findViewById<TextView>(R.id.startDate).text = task.getStartDate()
             findViewById<TextView>(R.id.startTime).text = task.getStartTime()
