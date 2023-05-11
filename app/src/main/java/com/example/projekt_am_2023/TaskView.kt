@@ -12,82 +12,97 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class TaskView : AppCompatActivity() {
+private const val ARG_PARAM1 = "task"
+class TaskView : Fragment() {
+    private lateinit var task: Task
+
     inner class SubtaskListener(private  val task: Task) : View.OnClickListener, View.OnLongClickListener {
         override fun onClick(view: View?) {
-            val i = Intent(this@TaskView, TaskView::class.java)
-            i.putExtra("task", task)
-            startActivity(i)
+            Toast.makeText(context, "onClick ${task.title}", Toast.LENGTH_SHORT).show()
         }
 
         override fun onLongClick(view: View?): Boolean {
-            Toast.makeText(this@TaskView, "onLongClick ${task.title}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "onLongClick ${task.title}", Toast.LENGTH_SHORT).show()
             return true
         }
     }
 
     inner class NewSubtaskListener() : View.OnClickListener {
         override fun onClick(view: View?) {
-            val i = Intent(this@TaskView, TaskView::class.java)
-            startActivity(i)
+            Toast.makeText(context, "on new ${task.title}", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_task_view)
 
-        val tagRecycler = findViewById<RecyclerView>(R.id.tagsRecycler)
-        tagRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        val task = intent.getSerializableExtra("task")
-
-        if(task != null) {
-            val task = task as Task
-            findViewById<CheckBox>(R.id.doneCheckbox).isChecked = task.done
-            findViewById<TextView>(R.id.taskTitle).text = task.title
-
-            val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
-            val drawable = ContextCompat.getDrawable(this, drawableId)
-            findViewById<ImageView>(R.id.userImage).setImageDrawable(drawable)
-            findViewById<TextView>(R.id.userText).text = task.assignee?.name ?: ""
-
-            findViewById<TextView>(R.id.startDate).text = task.getStartDate()
-            findViewById<TextView>(R.id.startTime).text = task.getStartTime()
-
-            findViewById<TextView>(R.id.endDate).text = task.getEndDate()
-            findViewById<TextView>(R.id.endTime).text = task.getEndTime()
-
-            findViewById<EditText>(R.id.descriptionText).setText(task.Description)
-
-            tagRecycler.adapter = TagAdapter(task.tags)
-
-            val subtasks = findViewById<LinearLayout>(R.id.subtasksRecycler)
-            for(subtask in task.subtasks) {
-                val tmp = LayoutInflater.from(this).inflate(R.layout.subtask, null, false)
-                tmp.findViewById<CheckBox>(R.id.doneCheckbox).isChecked = subtask.done
-                tmp.findViewById<TextView>(R.id.subtaskTitle).text = subtask.title
-
-                val listener = SubtaskListener(subtask)
-                tmp.setOnClickListener(listener)
-                tmp.setOnLongClickListener(listener)
-                subtasks.addView(tmp)
-            }
+        task = if (arguments != null) {
+            requireArguments().getSerializable(ARG_PARAM1) as Task
         } else {
-            tagRecycler.adapter = TagAdapter(emptyList())
+            Task("", false, null, null, null, null, mutableListOf(), mutableListOf())
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_task_view, container, false)
+        val tagRecycler = view.findViewById<RecyclerView>(R.id.tagsRecycler)
+        tagRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        view.findViewById<CheckBox>(R.id.doneCheckbox).isChecked = task.done
+        view.findViewById<TextView>(R.id.taskTitle).text = task.title
+
+        val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
+        val drawable = ContextCompat.getDrawable(requireContext(), drawableId)
+        view.findViewById<ImageView>(R.id.userImage).setImageDrawable(drawable)
+        view.findViewById<TextView>(R.id.userText).text = task.assignee?.name ?: ""
+
+        view.findViewById<TextView>(R.id.startDate).text = task.getStartDate()
+        view.findViewById<TextView>(R.id.startTime).text = task.getStartTime()
+
+        view.findViewById<TextView>(R.id.endDate).text = task.getEndDate()
+        view.findViewById<TextView>(R.id.endTime).text = task.getEndTime()
+
+        view.findViewById<EditText>(R.id.descriptionText).setText(task.Description)
+
+        tagRecycler.adapter = TagAdapter(task.tags)
+
+        val subtasks = view.findViewById<LinearLayout>(R.id.subtasksRecycler)
+        for(subtask in task.subtasks) {
+            val tmp = LayoutInflater.from(context).inflate(R.layout.subtask, null, false)
+            tmp.findViewById<CheckBox>(R.id.doneCheckbox).isChecked = subtask.done
+            tmp.findViewById<TextView>(R.id.subtaskTitle).text = subtask.title
+
+            val listener = SubtaskListener(subtask)
+            tmp.setOnClickListener(listener)
+            tmp.setOnLongClickListener(listener)
+            subtasks.addView(tmp)
         }
 
-        val subtasks = findViewById<LinearLayout>(R.id.subtasksRecycler)
-        val tmp = LayoutInflater.from(this).inflate(R.layout.new_element, null, false)
+        val tmp = LayoutInflater.from(context).inflate(R.layout.new_element, null, false)
         tmp.findViewById<TextView>(R.id.newText).text = getString(R.string.addSubtask)
         tmp.setOnClickListener(NewSubtaskListener())
         subtasks.addView(tmp)
+
+        return view
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(task: Task) = TaskView().apply {
+                arguments = Bundle().apply {
+                    putSerializable(ARG_PARAM1, task)
+                }
+            }
     }
 
     inner class TagAdapter(private var tags: List<Tag>) : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
@@ -117,18 +132,18 @@ class TaskView : AppCompatActivity() {
 
             inner class TagClick() : View.OnClickListener, View.OnLongClickListener {
                 override fun onClick(view: View?) {
-                    Toast.makeText(this@TaskView, "onClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "onClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onLongClick(view: View?): Boolean {
-                    Toast.makeText(this@TaskView, "onLongClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "onLongClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
                     return false
                 }
             }
 
             inner class NewClick() : View.OnClickListener {
                 override fun onClick(view: View?) {
-                    Toast.makeText(this@TaskView, "onClick New", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "onClick New", Toast.LENGTH_SHORT).show()
                 }
             }
         }
