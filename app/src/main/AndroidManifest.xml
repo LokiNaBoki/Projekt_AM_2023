@@ -42,6 +42,10 @@
             android:name=".CalendarMonthView"
             android:exported="false" />
         <activity
+            android:name=".CalendarWeekView"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
