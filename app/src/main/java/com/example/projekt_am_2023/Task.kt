@@ -1,19 +1,25 @@
 package com.example.projekt_am_2023
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@Entity
 data class Task(
-    var title: String,
-    var done: Boolean,
-    var assignee: User?,
-    var startCalendar: Calendar?,
-    var endCalendar: Calendar?,
-    var Description: String?,
-    var subtasks: MutableList<Task>,
-    var tags: MutableList<Tag>,
+    @PrimaryKey(autoGenerate = true) var id:Int = 0,
+    @ColumnInfo(name = "title") var title: String,
+    @ColumnInfo(name = "done") var done: Boolean,
+    @ColumnInfo(name = "assignee") var assignee: User?,
+    @ColumnInfo(name = "start_calendar") var startCalendar: Calendar?,
+    @ColumnInfo(name = "end_calendar") var endCalendar: Calendar?,
+    @ColumnInfo(name = "description") var Description: String?,
+    @Embedded var subtasks: MutableList<Task>,
+    @Embedded var tags: MutableList<Tag>,
 ) : Serializable {
     companion object {
         private var locale: Locale = Locale.getDefault()
