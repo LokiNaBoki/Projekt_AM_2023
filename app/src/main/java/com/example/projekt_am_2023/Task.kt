@@ -1,19 +1,22 @@
 package com.example.projekt_am_2023
 
+import com.google.firebase.database.IgnoreExtraProperties
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@IgnoreExtraProperties
 data class Task(
-    var title: String,
-    var done: Boolean,
-    var assignee: User?,
-    var startCalendar: Calendar?,
-    var endCalendar: Calendar?,
-    var Description: String?,
-    var subtasks: MutableList<Task>,
-    var tags: MutableList<Tag>,
+    var title: String="",
+    var done: Boolean=false,
+    var assignee: User?=null,
+    var startCalendar: Calendar?=null,
+    var endCalendar: Calendar?=null,
+    var Description: String?=null,
+    var subtasks: MutableList<Task> = mutableListOf(),
+    var tags: MutableList<Tag> = mutableListOf(),
+    var databaseId: String?=null
 ) : Serializable {
     companion object {
         private var locale: Locale = Locale.getDefault()

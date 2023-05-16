@@ -3,6 +3,11 @@ package com.example.projekt_am_2023
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.graphics.Color
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.getValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -136,9 +141,34 @@ class MainActivity : AppCompatActivity() {
 
         tasks[0].tasks[0].subtasks.add(tasks[0].tasks[1])
         tasks[0].tasks[0].subtasks.add(tasks[1].tasks[1])
-
         tasks[4].tasks[0].subtasks.add(tasks[2].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[3].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[4].tasks[1])
+
+        DataViewModel.save(user1)
+        DataViewModel.save(user2)
+        DataViewModel.save(tag1)
+        DataViewModel.save(tag2)
+        DataViewModel.save(tasks[0].tasks[1])
+        DataViewModel.save(tasks[1].tasks[1])
+        DataViewModel.save(tasks[2].tasks[1])
+        DataViewModel.save(tasks[3].tasks[1])
+        DataViewModel.save(tasks[4].tasks[1])
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                val sections = dataSnapshot.getValue<MutableList<Section>>()
+                Log.w("Firebase", "Tags loaded")
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        DataViewModel.tags.addValueEventListener(postListener)
+        DataViewModel.save(tag2)
     }
 }
+
+
