@@ -50,22 +50,24 @@ class TaskView : Fragment() {
         }
     }
 
-    private fun onTimeClick(time: Calendar) {
+    private fun onTimeClick(time: Calendar, callback: () -> Unit) {
         val timePickerDialog = TimePickerDialog(requireContext(),
             { _: TimePicker, hour: Int, minute: Int ->
                 time.set(Calendar.HOUR_OF_DAY, hour)
                 time.set(Calendar.MINUTE, minute)
+                callback()
             }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true
         )
         timePickerDialog.show()
     }
 
-    private fun onDateClick(date: Calendar) {
+    private fun onDateClick(date: Calendar, callback: () -> Unit) {
         val datePickerDialog = DatePickerDialog(requireContext(),
             { _: DatePicker, year: Int, month: Int, day: Int ->
                 date.set(Calendar.YEAR, year)
                 date.set(Calendar.MONTH, month)
                 date.set(Calendar.DAY_OF_MONTH, day)
+                callback()
             }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.show()
@@ -117,16 +119,18 @@ class TaskView : Fragment() {
             text = task.getStartDate()
             setOnClickListener {
                 if(task.startCalendar == null) { task.startCalendar = Calendar.getInstance() }
-                onDateClick(task.startCalendar!!)
-                (it as TextView).text = task.getStartDate()
+                onDateClick(task.startCalendar!!) {
+                    (it as TextView).text = task.getStartDate()
+                }
             }
         }
         view.findViewById<TextView>(R.id.startTime).apply{
             text = task.getStartTime()
             setOnClickListener {
                 if(task.startCalendar == null) { task.startCalendar = Calendar.getInstance() }
-                onTimeClick(task.startCalendar!!)
-                (it as TextView).text = task.getStartTime()
+                onTimeClick(task.startCalendar!!) {
+                    (it as TextView).text = task.getStartTime()
+                }
             }
         }
 
@@ -134,16 +138,18 @@ class TaskView : Fragment() {
             text = task.getEndDate()
             setOnClickListener {
                 if(task.endCalendar == null) { task.endCalendar = Calendar.getInstance() }
-                onDateClick(task.endCalendar!!)
-                (it as TextView).text = task.getEndDate()
+                onDateClick(task.endCalendar!!) {
+                    (it as TextView).text = task.getEndDate()
+                }
             }
         }
         view.findViewById<TextView>(R.id.endTime).apply{
             text = task.getEndTime()
             setOnClickListener {
                 if(task.endCalendar == null) { task.endCalendar = Calendar.getInstance() }
-                onTimeClick(task.endCalendar!!)
-                (it as TextView).text = task.getEndTime()
+                onTimeClick(task.endCalendar!!) {
+                    (it as TextView).text = task.getEndTime()
+                }
             }
         }
 
