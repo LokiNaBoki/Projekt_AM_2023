@@ -29,16 +29,19 @@ import java.util.Calendar
 private const val ARG_PARAM1 = "task"
 class TaskView : Fragment() {
     private lateinit var task: Task
+    private lateinit var subtasksLayout: LinearLayout
 
-    inner class SubtaskListener(private  val task: Task) : View.OnClickListener, View.OnLongClickListener {
+    inner class SubtaskListener(private  val subtask: Task) : View.OnClickListener, View.OnLongClickListener {
         override fun onClick(view: View?) {
             val i = Intent(context, EditTask::class.java)
-            i.putExtra("task", task)
+            i.putExtra("task", subtask)
             startActivity(i)
         }
 
         override fun onLongClick(view: View?): Boolean {
-            Toast.makeText(context, "onLongClick ${task.title}", Toast.LENGTH_SHORT).show()
+            val index = task.subtasks.indexOf(subtask)
+            subtasksLayout.removeViewAt(index)
+            task.subtasks.removeAt(index)
             return true
         }
     }
@@ -165,7 +168,7 @@ class TaskView : Fragment() {
             })
         }
 
-        val subtasksLayout = view.findViewById<LinearLayout>(R.id.subtasksRecycler)
+        subtasksLayout = view.findViewById(R.id.subtasksRecycler)
         for(subtask in task.subtasks) {
             val listener = SubtaskListener(subtask)
 
