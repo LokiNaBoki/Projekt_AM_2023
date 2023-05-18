@@ -1,5 +1,6 @@
 package com.example.projekt_am_2023
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -13,10 +14,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,31 +30,7 @@ private const val ARG_USERS = "users"
 class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
     private var users: ArrayList<User> = arrayListOf()
     private lateinit var task: Task
-    private lateinit var subtasksLayout: LinearLayout
-
-    inner class SubtaskListener(private  val subtask: Task) : View.OnClickListener, View.OnLongClickListener {
-        override fun onClick(view: View?) {
-            val i = Intent(context, EditTask::class.java)
-            i.putExtra("task", subtask)
-            i.putExtra("users", users)
-            startActivity(i)
-        }
-
-        override fun onLongClick(view: View?): Boolean {
-            val index = task.subtasks.indexOf(subtask)
-            subtasksLayout.removeViewAt(index)
-            task.subtasks.removeAt(index)
-            return true
-        }
-    }
-
-    inner class NewSubtaskListener : View.OnClickListener {
-        override fun onClick(view: View?) {
-            val i = Intent(context, AddTask::class.java)
-            i.putExtra("users", users)
-            startActivity(i)
-        }
-    }
+    private lateinit var subtasksAdapter: SubtaskAdapter
 
     private fun onTimeClick(time: Calendar, callback: () -> Unit) {
         val timePickerDialog = TimePickerDialog(requireContext(),
@@ -171,26 +148,11 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
             })
         }
 
-        subtasksLayout = view.findViewById(R.id.subtasksRecycler)
-        for(subtask in task.subtasks) {
-            val listener = SubtaskListener(subtask)
-
-            subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.subtask, subtasksLayout, false).apply {
-                findViewById<CheckBox>(R.id.doneCheckbox).apply {
-                    isChecked = subtask.done
-                    setOnCheckedChangeListener { _, isChecked -> subtask.done = isChecked  }
-                }
-                findViewById<TextView>(R.id.subtaskTitle).text = subtask.title
-                setOnClickListener(listener)
-                setOnLongClickListener(listener)
-            })
+        subtasksAdapter = SubtaskAdapter()
+        view.findViewById<RecyclerView>(R.id.subtasksRecycler).apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = subtasksAdapter
         }
-
-        subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.new_element, subtasksLayout, false).apply {
-            layoutParams = layoutParams.apply { width = ViewGroup.LayoutParams.MATCH_PARENT }
-            findViewById<TextView>(R.id.newText).text = getString(R.string.addSubtask)
-            setOnClickListener(NewSubtaskListener())
-        })
 
         view.findViewById<RecyclerView>(R.id.tagsRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -279,6 +241,95 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
         }
 
         override fun getItemCount() = task.tags.size + 1
+    }
+
+    inner class SubtaskAdapter() : RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
+        private val REGULAR = 0
+        private val ADDSUBTASK = 1
+
+        override fun getItemViewType(position: Int): Int {
+            return if (position == task.subtasks.size) { ADDSUBTASK } else { REGULAR }
+        }
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val name: TextView
+            val checkbox: CheckBox?
+
+            init {
+                name = view.findViewById(R.id.subtaskTitle) ?: view.findViewById(R.id.newText)
+                checkbox = view.findViewById(R.id.doneCheckbox)
+
+                view.findViewById<ConstraintLayout>(R.id.newElementLayout)?.apply {
+                    setOnClickListener(NewClick())
+                }
+
+                view.findViewById<ConstraintLayout>(R.id.subtaskLayoutOuter)?.apply {
+                    val listener = SubtaskClick()
+                    setOnClickListener(listener)
+                    setOnLongClickListener(listener)
+                }
+            }
+
+            inner class SubtaskClick : View.OnClickListener, View.OnLongClickListener {
+                override fun onClick(view: View?) {
+                    val i = Intent(context, EditTask::class.java)
+                    i.putExtra("task", task.subtasks[adapterPosition])
+                    i.putExtra("users", users)
+                    i.putExtra("index", adapterPosition)
+                    startActivity(i)
+                }
+
+                override fun onLongClick(p0: View?): Boolean {
+                    task.subtasks.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                    return true
+                }
+            }
+
+            inner class NewClick : View.OnClickListener {
+                override fun onClick(view: View?) {
+                    val i = Intent(context, AddTask::class.java)
+                    i.putExtra("users", users)
+                    startActivity(i)
+                }
+            }
+        }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+            return when(viewType) {
+                ADDSUBTASK -> {
+                    ViewHolder(LayoutInflater.from(viewGroup.context)
+                        .inflate(R.layout.new_element, viewGroup, false).apply {
+                            layoutParams = layoutParams.apply { width = ViewGroup.LayoutParams.MATCH_PARENT }
+                    })
+                }
+                REGULAR -> {
+                    ViewHolder(LayoutInflater.from(viewGroup.context)
+                        .inflate(R.layout.subtask, viewGroup, false))
+                }
+                else -> throw IllegalArgumentException("Invalid view type")
+            }
+        }
+
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            when (viewHolder.itemViewType) {
+                ADDSUBTASK -> {
+                    viewHolder.name.apply {
+                        text = getString(R.string.addSubtask)
+                    }
+                }
+                REGULAR -> {
+                    val subtask = task.subtasks[position]
+                    viewHolder.name.text = subtask.title
+                    viewHolder.checkbox!!.apply {
+                        isChecked = subtask.done
+                        setOnCheckedChangeListener { _, isChecked -> subtask.done = isChecked  }
+                    }
+                }
+            }
+        }
+
+        override fun getItemCount() = task.subtasks.size + 1
     }
 
     override fun onFinishAssigneeDialog(assignee: User) {

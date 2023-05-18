@@ -205,15 +205,12 @@
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/subtasksRecycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
+                        android:layout_marginEnd="10dp" />
 
                 </LinearLayout>
 
