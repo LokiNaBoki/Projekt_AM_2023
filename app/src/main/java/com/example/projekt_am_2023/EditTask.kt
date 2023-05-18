@@ -1,11 +1,14 @@
 package com.example.projekt_am_2023
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 
 class EditTask : AppCompatActivity() {
+    private var index: Int = 0
+    private var section: Int = 0
     private lateinit var task: Task
     private lateinit var fragment: TaskView
 
@@ -14,6 +17,8 @@ class EditTask : AppCompatActivity() {
         setContentView(R.layout.activity_edit_task)
 
         task = intent.extras!!.getSerializable("task") as Task
+        index = intent.extras!!.getInt("index")
+        section = intent.extras!!.getInt("section")
         val users = intent.extras!!.getSerializable("users") as ArrayList<User>
 
         fragment = TaskView.newInstance(task, users)
@@ -21,12 +26,17 @@ class EditTask : AppCompatActivity() {
     }
 
     fun onSave(ignoredView: View) {
-        Toast.makeText(this, "Task Saved - '${fragment.getTask().title}'", Toast.LENGTH_SHORT).show()
+        val result = Intent().apply {
+            putExtra("task", task)
+            putExtra("index", index)
+            putExtra("section", section)
+        }
+        setResult(Activity.RESULT_OK, result);
         finish()
     }
 
     fun onCancel(ignoredView: View) {
-        Toast.makeText(this, "Task edit canceled", Toast.LENGTH_SHORT).show()
+        setResult(Activity.RESULT_CANCELED, null);
         finish()
     }
 }
