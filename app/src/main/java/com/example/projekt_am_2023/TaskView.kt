@@ -243,6 +243,29 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
         override fun getItemCount() = task.tags.size + 1
     }
 
+    private var editResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+            val newTask = (result.data!!.getSerializableExtra("task") as Task)
+            val index = result.data!!.getIntExtra("index", 0)
+            task.subtasks[index] = newTask
+            subtasksAdapter.notifyItemChanged(index)
+        } else {
+            Toast.makeText(context, "Canceled", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private var addResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
+            val newTask = (result.data!!.getSerializableExtra("task") as Task)
+            task.subtasks.add(newTask)
+            subtasksAdapter.notifyItemInserted(task.subtasks.size)
+        } else {
+            Toast.makeText(context, "Canceled", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     inner class SubtaskAdapter() : RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDSUBTASK = 1
@@ -276,7 +299,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
                     i.putExtra("task", task.subtasks[adapterPosition])
                     i.putExtra("users", users)
                     i.putExtra("index", adapterPosition)
-                    startActivity(i)
+                    editResult.launch(i)
                 }
 
                 override fun onLongClick(p0: View?): Boolean {
@@ -290,7 +313,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
                 override fun onClick(view: View?) {
                     val i = Intent(context, AddTask::class.java)
                     i.putExtra("users", users)
-                    startActivity(i)
+                    addResult.launch(i)
                 }
             }
         }
