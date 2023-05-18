@@ -27,4 +27,5 @@
     <string name="descriptionDescription">Description of a task</string>
     <string name="addTag">New Tag</string>
     <string name="addSubtask">New subtask</string>
+    <string name="userListTitle">Select assignee</string>
 </resources>
