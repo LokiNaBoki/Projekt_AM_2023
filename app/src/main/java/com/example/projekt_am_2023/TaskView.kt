@@ -13,20 +13,18 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
-
 private const val ARG_PARAM1 = "task"
+
 class TaskView : Fragment() {
     private lateinit var task: Task
     private lateinit var subtasksLayout: LinearLayout
@@ -110,12 +108,12 @@ class TaskView : Fragment() {
             })
         }
 
-        val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
-        val drawable = ContextCompat.getDrawable(requireContext(), drawableId)
-        view.findViewById<ImageView>(R.id.userImage).apply{ setImageDrawable(drawable) }
-        view.findViewById<TextView>(R.id.userText).apply{ text = task.assignee?.name ?: "" }
-        view.findViewById<LinearLayout>(R.id.userLayout).apply {
-            setOnClickListener { Toast.makeText(context, "TODO assignee", Toast.LENGTH_SHORT).show() }
+        view.findViewById<AssigneeComponent>(R.id.assignee).setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "TODO: assignee",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         view.findViewById<TextView>(R.id.startDate).apply{
