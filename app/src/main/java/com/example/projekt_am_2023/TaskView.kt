@@ -191,7 +191,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
 
         view.findViewById<RecyclerView>(R.id.tagsRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = TagAdapter(task.tags)
+            adapter = TagAdapter()
         }
 
         return view
@@ -207,12 +207,12 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
             }
     }
 
-    inner class TagAdapter(private var tags: List<Tag>) : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+    inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDTAG = 1
 
         override fun getItemViewType(position: Int): Int {
-            return if (position == tags.size) { ADDTAG } else { REGULAR }
+            return if (position == task.tags.size) { ADDTAG } else { REGULAR }
         }
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -273,15 +273,15 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
                 }
                 REGULAR -> {
                     viewHolder.name.apply{
-                        text = tags[position].name
-                        backgroundTintList = ColorStateList.valueOf(tags[position].color)
+                        text = task.tags[position].name
+                        backgroundTintList = ColorStateList.valueOf(task.tags[position].color)
                     }
 
                 }
             }
         }
 
-        override fun getItemCount() = tags.size + 1
+        override fun getItemCount() = task.tags.size + 1
     }
 
     fun getTask() = task
