@@ -229,20 +229,14 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
                 }
 
                 view.findViewById<ConstraintLayout>(R.id.tagLayout)?.apply {
-                    val listener = TagClick()
-                    setOnClickListener(listener)
-                    setOnLongClickListener(listener)
+                    setOnClickListener(TagClick())
                 }
             }
 
-            inner class TagClick : View.OnClickListener, View.OnLongClickListener {
+            inner class TagClick : View.OnClickListener {
                 override fun onClick(view: View?) {
-                    Toast.makeText(context, "onClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onLongClick(view: View?): Boolean {
-                    Toast.makeText(context, "onLongClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
-                    return false
+                    task.tags.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
                 }
             }
 
@@ -286,8 +280,6 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
 
         override fun getItemCount() = task.tags.size + 1
     }
-
-    fun getTask() = task
 
     override fun onFinishAssigneeDialog(assignee: User) {
         requireView().findViewById<AssigneeComponent>(R.id.assignee).user = assignee
