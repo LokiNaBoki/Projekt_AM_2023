@@ -47,7 +47,7 @@ class TaskView : Fragment() {
         }
     }
 
-    inner class NewSubtaskListener() : View.OnClickListener {
+    inner class NewSubtaskListener : View.OnClickListener {
         override fun onClick(view: View?) {
             val i = Intent(context, AddTask::class.java)
             i.putExtra("users", users)
@@ -176,7 +176,7 @@ class TaskView : Fragment() {
         for(subtask in task.subtasks) {
             val listener = SubtaskListener(subtask)
 
-            subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.subtask, null, false).apply {
+            subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.subtask, subtasksLayout, false).apply {
                 findViewById<CheckBox>(R.id.doneCheckbox).apply {
                     isChecked = subtask.done
                     setOnCheckedChangeListener { _, isChecked -> subtask.done = isChecked  }
@@ -187,7 +187,7 @@ class TaskView : Fragment() {
             })
         }
 
-        subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.new_element, null, false).apply {
+        subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.new_element, subtasksLayout, false).apply {
             findViewById<TextView>(R.id.newText).text = getString(R.string.addSubtask)
             setOnClickListener(NewSubtaskListener())
         })
@@ -235,7 +235,7 @@ class TaskView : Fragment() {
                 }
             }
 
-            inner class TagClick() : View.OnClickListener, View.OnLongClickListener {
+            inner class TagClick : View.OnClickListener, View.OnLongClickListener {
                 override fun onClick(view: View?) {
                     Toast.makeText(context, "onClick ${tags[adapterPosition].name}", Toast.LENGTH_SHORT).show()
                 }
@@ -246,7 +246,7 @@ class TaskView : Fragment() {
                 }
             }
 
-            inner class NewClick() : View.OnClickListener {
+            inner class NewClick : View.OnClickListener {
                 override fun onClick(view: View?) {
                     Toast.makeText(context, "onClick New", Toast.LENGTH_SHORT).show()
                 }
@@ -270,12 +270,12 @@ class TaskView : Fragment() {
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             when (viewHolder.itemViewType) {
                 ADDTAG -> {
-                    viewHolder.name!!.apply {
+                    viewHolder.name.apply {
                         text = getString(R.string.addTag)
                     }
                 }
                 REGULAR -> {
-                    viewHolder.name!!.apply{
+                    viewHolder.name.apply{
                         text = tags[position].name
                         backgroundTintList = ColorStateList.valueOf(tags[position].color)
                     }

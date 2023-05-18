@@ -2,7 +2,6 @@ package com.example.projekt_am_2023
 
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
-import android.os.Bundle
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Calendar

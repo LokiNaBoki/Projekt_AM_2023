@@ -2,7 +2,6 @@ package com.example.projekt_am_2023
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 
@@ -21,12 +20,12 @@ class EditTask : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.editTaskFragment, fragment).commit()
     }
 
-    fun onSave(view: View) {
+    fun onSave(ignoredView: View) {
         Toast.makeText(this, "Task Saved - '${fragment.getTask().title}'", Toast.LENGTH_SHORT).show()
         finish()
     }
 
-    fun onCancel(view: View) {
+    fun onCancel(ignoredView: View) {
         Toast.makeText(this, "Task edit canceled", Toast.LENGTH_SHORT).show()
         finish()
     }
