@@ -184,6 +184,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
         }
 
         subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.new_element, subtasksLayout, false).apply {
+            layoutParams = layoutParams.apply { width = ViewGroup.LayoutParams.MATCH_PARENT }
             findViewById<TextView>(R.id.newText).text = getString(R.string.addSubtask)
             setOnClickListener(NewSubtaskListener())
         })
