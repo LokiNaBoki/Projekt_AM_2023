@@ -170,7 +170,10 @@ class TaskView : Fragment() {
             val listener = SubtaskListener(subtask)
 
             subtasksLayout.addView(LayoutInflater.from(context).inflate(R.layout.subtask, null, false).apply {
-                findViewById<CheckBox>(R.id.doneCheckbox).isChecked = subtask.done
+                findViewById<CheckBox>(R.id.doneCheckbox).apply {
+                    isChecked = subtask.done
+                    setOnCheckedChangeListener { _, isChecked -> subtask.done = isChecked  }
+                }
                 findViewById<TextView>(R.id.subtaskTitle).text = subtask.title
                 setOnClickListener(listener)
                 setOnLongClickListener(listener)
