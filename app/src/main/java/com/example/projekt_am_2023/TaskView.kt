@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
-private const val ARG_PARAM1 = "task"
+private const val ARG_TASK = "task"
+private const val ARG_USERS = "users"
 
 class TaskView : Fragment() {
+    private var users: ArrayList<User> = arrayListOf()
     private lateinit var task: Task
     private lateinit var subtasksLayout: LinearLayout
 
@@ -33,6 +35,7 @@ class TaskView : Fragment() {
         override fun onClick(view: View?) {
             val i = Intent(context, EditTask::class.java)
             i.putExtra("task", subtask)
+            i.putExtra("users", users)
             startActivity(i)
         }
 
@@ -47,6 +50,7 @@ class TaskView : Fragment() {
     inner class NewSubtaskListener() : View.OnClickListener {
         override fun onClick(view: View?) {
             val i = Intent(context, AddTask::class.java)
+            i.putExtra("users", users)
             startActivity(i)
         }
     }
@@ -78,10 +82,12 @@ class TaskView : Fragment() {
         super.onCreate(savedInstanceState)
 
         task = if (arguments != null) {
-            requireArguments().getSerializable(ARG_PARAM1) as Task
+            users = arguments?.getSerializable(ARG_USERS) as ArrayList<User>
+            requireArguments().getSerializable(ARG_TASK) as Task
         } else {
             Task.emptyTask()
         }
+
     }
 
     override fun onCreateView(
@@ -196,9 +202,10 @@ class TaskView : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(task: Task) = TaskView().apply {
+        fun newInstance(task: Task, users: ArrayList<User>) = TaskView().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, task)
+                    putSerializable(ARG_TASK, task)
+                    putSerializable(ARG_USERS, users)
                 }
             }
     }
