@@ -26,7 +26,7 @@ import java.util.Calendar
 private const val ARG_TASK = "task"
 private const val ARG_USERS = "users"
 
-class TaskView : Fragment() {
+class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
     private var users: ArrayList<User> = arrayListOf()
     private lateinit var task: Task
     private lateinit var subtasksLayout: LinearLayout
@@ -115,11 +115,7 @@ class TaskView : Fragment() {
         }
 
         view.findViewById<AssigneeComponent>(R.id.assignee).setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "TODO: assignee",
-                Toast.LENGTH_SHORT
-            ).show()
+            UserListFragment.newInstance(ArrayList(users)).show(childFragmentManager, null)
         }
 
         view.findViewById<TextView>(R.id.startDate).apply{
@@ -288,4 +284,9 @@ class TaskView : Fragment() {
     }
 
     fun getTask() = task
+
+    override fun onFinishAssigneeDialog(assignee: User) {
+        requireView().findViewById<AssigneeComponent>(R.id.assignee).user = assignee
+        task.assignee = assignee
+    }
 }
