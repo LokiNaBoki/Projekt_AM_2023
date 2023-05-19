@@ -1,12 +1,12 @@
 package com.example.projekt_am_2023
 
-import com.google.firebase.database.IgnoreExtraProperties
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-@IgnoreExtraProperties
 data class Task(
     var title: String="",
     var done: Boolean=false,
@@ -16,6 +16,7 @@ data class Task(
     var Description: String?=null,
     var subtasks: MutableList<Task> = mutableListOf(),
     var tags: MutableList<Tag> = mutableListOf(),
+    var section: Section?=null,
     var databaseId: String?=null
 ) : Serializable {
     companion object {
@@ -25,6 +26,90 @@ data class Task(
 
         @JvmStatic
         fun emptyTask() = Task("", false, null, null, null, null, mutableListOf(), mutableListOf())
+
+        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Task>{
+            var tasks = mutableListOf<Task>()
+            tasks.add(loadDatabase(dataSnapshot))
+            return tasks
+        }
+        fun loadDatabase(dataSnapshot: DataSnapshot) : Task{
+            var task : Task = Task()
+            task.databaseId = dataSnapshot.key
+            task.done = dataSnapshot.child("title").value as Boolean
+            task.assignee = User.loadDatabase(dataSnapshot.child("title"))
+//            DataViewModel.users.child(dataSnapshot.child("assignee").value as String).get().addOnSuccessListener {
+//                task.assignee =  User.loadDatabase(it)
+//            }
+            //task.assignee = User.loadDatabase(DataViewModel.users.child(dataSnapshot.child("assignee").value as String))
+            task.startCalendar = Calendar.getInstance()
+            task.startCalendar!!.time.time = dataSnapshot.child("startCalendar").value as Long
+            task.endCalendar = Calendar.getInstance()
+            task.endCalendar!!.time.time = dataSnapshot.child("endCalendar").value as Long
+            task.Description = dataSnapshot.child("Description").value as String
+            task.subtasks = Task.loadDatabaseArray(dataSnapshot.child("subtasks"))
+            task.tags = Tag.loadDatabaseArray(dataSnapshot.child("tags"))
+//            for(t in dataSnapshot.child("tags") as List<DataSnapshot>){
+//                task.tags.add(Tag.loadDatabase(DataViewModel.tasks.child(t.key!!).get()))
+//            }
+//            for(t in dataSnapshot.child("tags") as List<DataSnapshot>){
+//                DataViewModel.tasks.child(t.key!!).get().addOnSuccessListener {
+//                    task.tags.add(Tag.loadDatabase(it))
+//                }
+//                task.subtasks.add())
+//            }
+            return task
+        }
+    }
+
+    fun saveDatabase(){
+        var key : String?
+        if(this.databaseId == null){
+            key = DataViewModel.tasks.push().key
+        }else{
+            key = this.databaseId
+        }
+
+        if (key == null) {
+            Log.w("Firebase", "Couldn't get push key for posts")
+            return
+        }
+
+        var subtasks = hashMapOf<String, Boolean>()
+        for(t in this.subtasks){
+            if(t.databaseId == null){
+                Log.w("Firebase","Subtask not in database.")
+                return
+            }
+            subtasks[t.databaseId!!] = true
+        }
+
+        var tags = hashMapOf<String, Boolean>()
+        for(t in this.tags){
+            if(t.databaseId == null){
+                Log.w("Firebase","Tag not in database.")
+                return
+            }
+            subtasks[t.databaseId!!] = true
+        }
+
+
+        val postValues = hashMapOf<String, Any>(
+            "title" to this.title,
+            "done" to this.done,
+            "assignee" to this.assignee?.databaseId!!,
+            "startCalendar" to (this.startCalendar?.time?.time!!),
+            "endCalendar" to (this.endCalendar?.time?.time!!),
+            "description" to (if(this.Description==null)"" else this.Description!!),
+            "subtasks" to subtasks,
+            "tags" to tags
+        )
+
+        val childUpdates = hashMapOf<String, Any>(
+            "/tasks/$key" to postValues,
+//                "/sections/$sectionId/$key" to true,
+        )
+        this.databaseId = key
+        DataViewModel.dataref.updateChildren(childUpdates)
     }
 
     private fun getWeekDay(cal: Calendar?): String {
