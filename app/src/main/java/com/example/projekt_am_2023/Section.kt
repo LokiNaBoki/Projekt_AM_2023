@@ -44,14 +44,24 @@ data class Section(
     }
 
     companion object{
+        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Section> {
+            var sections = mutableListOf<Section>()
+            for (d in dataSnapshot.children){
+                sections.add(loadDatabase(d))
+            }
+            return sections
+        }
         fun loadDatabase(dataSnapshot: DataSnapshot) : Section{
+            Log.i("Firebase",""+dataSnapshot)
             var section : Section =  Section()
             section.databaseId = dataSnapshot.key
             section.name = dataSnapshot.child("name").value as String
-            section.tasks = Task.loadDatabaseArray(dataSnapshot.child("tasks"))
-//            for(t in dataSnapshot.child("subtasks").children){
-//                Task.loadDatabase(DataViewModel.tasks.child(t.key!!).get())
-//            }
+//            section.tasks = Task.loadDatabaseArray(dataSnapshot.child("tasks"))
+            for(t in dataSnapshot.child("tasks").children){
+                DataViewModel.tags.child(t.key!!).get().addOnSuccessListener {
+                    section.tasks.add(Task.loadDatabase(it))
+                }
+            }
             return section
         }
     }

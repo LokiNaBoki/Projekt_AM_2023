@@ -39,16 +39,19 @@ data class Tag(
     }
 
     companion object{
-        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Tag>{
+        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Tag> {
             var tags = mutableListOf<Tag>()
-            tags.add(loadDatabase(dataSnapshot))
+            for (d in dataSnapshot.children){
+                tags.add(loadDatabase(d))
+            }
             return tags
         }
         fun loadDatabase(dataSnapshot: DataSnapshot) : Tag{
+            Log.i("Firebase",""+dataSnapshot)
             var tag : Tag = Tag()
             tag.databaseId = dataSnapshot.key
             tag.name = dataSnapshot.child("name").value as String
-            tag.color = dataSnapshot.child("name").value as Int
+            tag.color = (dataSnapshot.child("color").value as Long).toInt()
             return tag
         }
     }
