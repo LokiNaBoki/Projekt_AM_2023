@@ -7,7 +7,6 @@ import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.getValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -154,14 +153,24 @@ class MainActivity : AppCompatActivity() {
 //        tasks[2].tasks[1].saveDatabase()
 //        tasks[3].tasks[1].saveDatabase()
 //        tasks[4].tasks[1].saveDatabase()
+//        for(s in tasks){
+//            for(t in s.tasks){
+//                t.saveDatabase()
+//            }
+//            s.saveDatabase()
+//        }
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.w("Firebase", "Tasks to load $dataSnapshot")
-
-                var tasks = Task.loadDatabaseArray(dataSnapshot)
+                Log.i("Firebase", "Tasks to load $dataSnapshot")
+                var tasks = DatabaseLoader.loadDatabase(dataSnapshot)
 //                val sections = dataSnapshot.getValue<MutableList<Section>>()
-                Log.w("Firebase", "Tasks loaded $tasks")
+                Log.i("Firebase", "Tasks loaded ${tasks[0].name}")
+                Log.i("Firebase", "Tasks loaded ${tasks[0].tasks[0].title}")
+//                if(tasks[0].tasks[0].title == "Task 4.2"){
+//                    tasks[0].tasks[0].title = "Changed Title"
+//                    tasks[0].tasks[0].saveDatabase()
+//                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -169,8 +178,8 @@ class MainActivity : AppCompatActivity() {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
             }
         }
-        DataViewModel.tasks.addValueEventListener(postListener)
-//        DataViewModel.save(tag2)
+        DatabaseLoader.dataref.addValueEventListener(postListener)
+
     }
 }
 

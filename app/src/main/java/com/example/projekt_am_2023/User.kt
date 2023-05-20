@@ -7,14 +7,13 @@ import java.io.Serializable
 data class User(
     var name: String="",
     var avatar: Int?=null,
-    var tasks: MutableList<Task> = mutableListOf(),
     var databaseId: String?=null
 ) : Serializable{
     
     fun saveDatabase(){
         var key : String?
         if(this.databaseId == null){
-            key = DataViewModel.sections.push().key
+            key = DatabaseLoader.sections.push().key
         }else{
             key = this.databaseId
         }
@@ -35,7 +34,7 @@ data class User(
         )
 
         this.databaseId = key
-        DataViewModel.dataref.updateChildren(childUpdates)
+        DatabaseLoader.dataref.updateChildren(childUpdates)
     }
 
     companion object{
@@ -46,8 +45,17 @@ data class User(
             }
             return users
         }
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String,User> {
+            var elements = HashMap<String,User>()
+            for (d in dataSnapshot.children){
+                val element = loadDatabase(d)
+                elements[element.databaseId!!] = element
+            }
+            return elements
+        }
+
         fun loadDatabase(dataSnapshot: DataSnapshot) : User{
-            Log.i("Firebase",""+dataSnapshot)
+//            Log.i("Firebase",""+dataSnapshot)
             var user : User =  User()
             user.databaseId = dataSnapshot.key
             user.name = dataSnapshot.child("name").value as String

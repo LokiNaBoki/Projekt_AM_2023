@@ -12,7 +12,7 @@ data class Section(
     fun saveDatabase(){
         var key : String?
         if(this.databaseId == null){
-            key = DataViewModel.sections.push().key
+            key = DatabaseLoader.sections.push().key
         }else{
             key = this.databaseId
         }
@@ -40,26 +40,35 @@ data class Section(
             "/sections/$key" to postValues
         )
         this.databaseId = key
-        DataViewModel.dataref.updateChildren(childUpdates)
+        DatabaseLoader.dataref.updateChildren(childUpdates)
     }
 
     companion object{
-        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Section> {
-            var sections = mutableListOf<Section>()
+//        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Section> {
+//            var sections = mutableListOf<Section>()
+//            for (d in dataSnapshot.children){
+//                sections.add(loadDatabase(d))
+//            }
+//            return sections
+//        }
+
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot, tasks:HashMap<String,Task>) : HashMap<String,Section> {
+            var elements = HashMap<String,Section>()
             for (d in dataSnapshot.children){
-                sections.add(loadDatabase(d))
+                val element = loadDatabase(d, tasks)
+                elements[element.databaseId!!] = element
             }
-            return sections
+            return elements
         }
-        fun loadDatabase(dataSnapshot: DataSnapshot) : Section{
-            Log.i("Firebase",""+dataSnapshot)
+
+        fun loadDatabase(dataSnapshot: DataSnapshot, tasks:HashMap<String,Task>) : Section{
+//            Log.i("Firebase",""+dataSnapshot)
             var section : Section =  Section()
             section.databaseId = dataSnapshot.key
             section.name = dataSnapshot.child("name").value as String
-//            section.tasks = Task.loadDatabaseArray(dataSnapshot.child("tasks"))
             for(t in dataSnapshot.child("tasks").children){
-                DataViewModel.tags.child(t.key!!).get().addOnSuccessListener {
-                    section.tasks.add(Task.loadDatabase(it))
+                if(tasks.containsKey(t.key)){
+                    section.tasks.add(tasks[t.key]!!)
                 }
             }
             return section
