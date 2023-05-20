@@ -151,20 +151,23 @@ class MainActivity : AppCompatActivity() {
         tasks[4].tasks[0].subtasks.add(tasks[3].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[4].tasks[1])
 
-        DataViewModel.save(user1)
-        DataViewModel.save(user2)
-        DataViewModel.save(tag1)
-        DataViewModel.save(tag2)
-        DataViewModel.save(tasks[0].tasks[1])
-        DataViewModel.save(tasks[1].tasks[1])
-        DataViewModel.save(tasks[2].tasks[1])
-        DataViewModel.save(tasks[3].tasks[1])
-        DataViewModel.save(tasks[4].tasks[1])
+//        user1.saveDatabase()
+//        user2.saveDatabase()
+//        tag1.saveDatabase()
+//        tag2.saveDatabase()
+//        tasks[0].tasks[1].saveDatabase()
+//        tasks[1].tasks[1].saveDatabase()
+//        tasks[2].tasks[1].saveDatabase()
+//        tasks[3].tasks[1].saveDatabase()
+//        tasks[4].tasks[1].saveDatabase()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.w("Firebase", "Tasks to load $dataSnapshot")
+
+                var tasks = Task.loadDatabaseArray(dataSnapshot)
 //                val sections = dataSnapshot.getValue<MutableList<Section>>()
-                Log.w("Firebase", "Tags loaded")
+                Log.w("Firebase", "Tasks loaded $tasks")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -172,8 +175,8 @@ class MainActivity : AppCompatActivity() {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
             }
         }
-        DataViewModel.tags.addValueEventListener(postListener)
-        DataViewModel.save(tag2)
+        DataViewModel.tasks.addValueEventListener(postListener)
+//        DataViewModel.save(tag2)
     }
 }
 

@@ -29,34 +29,42 @@ data class Task(
 
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Task>{
             var tasks = mutableListOf<Task>()
-            tasks.add(loadDatabase(dataSnapshot))
+            for (d in dataSnapshot.children) {
+                tasks.add(loadDatabase(d))
+            }
             return tasks
         }
         fun loadDatabase(dataSnapshot: DataSnapshot) : Task{
+            Log.i("Firebase",""+dataSnapshot)
             var task : Task = Task()
             task.databaseId = dataSnapshot.key
-            task.done = dataSnapshot.child("title").value as Boolean
-            task.assignee = User.loadDatabase(dataSnapshot.child("title"))
-//            DataViewModel.users.child(dataSnapshot.child("assignee").value as String).get().addOnSuccessListener {
-//                task.assignee =  User.loadDatabase(it)
-//            }
+            task.title = dataSnapshot.child("title").value as String
+            task.done = dataSnapshot.child("done").value as Boolean
+//            task.assignee = User.loadDatabase(dataSnapshot.child("title"))
+            DataViewModel.users.child(dataSnapshot.child("assignee").value as String).get().addOnSuccessListener {
+                task.assignee =  User.loadDatabase(it)
+            }
             //task.assignee = User.loadDatabase(DataViewModel.users.child(dataSnapshot.child("assignee").value as String))
             task.startCalendar = Calendar.getInstance()
             task.startCalendar!!.time.time = dataSnapshot.child("startCalendar").value as Long
             task.endCalendar = Calendar.getInstance()
             task.endCalendar!!.time.time = dataSnapshot.child("endCalendar").value as Long
-            task.Description = dataSnapshot.child("Description").value as String
-            task.subtasks = Task.loadDatabaseArray(dataSnapshot.child("subtasks"))
-            task.tags = Tag.loadDatabaseArray(dataSnapshot.child("tags"))
+            task.Description = dataSnapshot.child("Description").value as String?
+//            task.subtasks = Task.loadDatabaseArray(dataSnapshot.child("subtasks"))
+            for(t in dataSnapshot.child("subtasks").children){
+                DataViewModel.tasks.child(t.key!!).get().addOnSuccessListener {
+                    task.subtasks.add(Task.loadDatabase(it))
+                }
+            }
+//            task.tags = Tag.loadDatabaseArray(dataSnapshot.child("tags"))
 //            for(t in dataSnapshot.child("tags") as List<DataSnapshot>){
 //                task.tags.add(Tag.loadDatabase(DataViewModel.tasks.child(t.key!!).get()))
 //            }
-//            for(t in dataSnapshot.child("tags") as List<DataSnapshot>){
-//                DataViewModel.tasks.child(t.key!!).get().addOnSuccessListener {
-//                    task.tags.add(Tag.loadDatabase(it))
-//                }
-//                task.subtasks.add())
-//            }
+            for(t in dataSnapshot.child("tags").children){
+                DataViewModel.tags.child(t.key!!).get().addOnSuccessListener {
+                    task.tags.add(Tag.loadDatabase(it))
+                }
+            }
             return task
         }
     }
@@ -89,7 +97,7 @@ data class Task(
                 Log.w("Firebase","Tag not in database.")
                 return
             }
-            subtasks[t.databaseId!!] = true
+            tags[t.databaseId!!] = true
         }
 
 

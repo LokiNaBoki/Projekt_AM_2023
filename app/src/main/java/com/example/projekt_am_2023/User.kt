@@ -41,14 +41,17 @@ data class User(
     companion object{
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<User>{
             var users = mutableListOf<User>()
-            users.add(loadDatabase(dataSnapshot))
+            for (d in dataSnapshot.children) {
+                users.add(loadDatabase(d))
+            }
             return users
         }
         fun loadDatabase(dataSnapshot: DataSnapshot) : User{
+            Log.i("Firebase",""+dataSnapshot)
             var user : User =  User()
             user.databaseId = dataSnapshot.key
             user.name = dataSnapshot.child("name").value as String
-            user.avatar = dataSnapshot.child("name").value as Int
+            user.avatar = (dataSnapshot.child("avatar").value as Long?)?.toInt()
             return user
         }
     }
