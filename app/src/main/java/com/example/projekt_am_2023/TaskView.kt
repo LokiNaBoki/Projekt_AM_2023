@@ -99,6 +99,12 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
             setOnClickListener {
                 UserListFragment.newInstance(ArrayList(users)).show(childFragmentManager, null)
             }
+
+            setOnLongClickListener {
+                task.assignee = null
+                user = task.assignee
+                true
+            }
         }
 
         view.findViewById<TextView>(R.id.startDate).apply{
