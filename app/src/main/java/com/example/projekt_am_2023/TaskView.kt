@@ -26,11 +26,14 @@ import java.util.Calendar
 
 private const val ARG_TASK = "task"
 private const val ARG_USERS = "users"
+private const val ARG_TAGS = "tags"
 
-class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
+class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFragment.TagDialogListener {
     private var users: ArrayList<User> = arrayListOf()
+    private var tags: ArrayList<Tag> = arrayListOf()
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
+    private lateinit var tagsAdapter: TagAdapter
 
     private fun onTimeClick(time: Calendar, callback: () -> Unit) {
         val timePickerDialog = TimePickerDialog(requireContext(),
@@ -60,11 +63,11 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
 
         task = if (arguments != null) {
             users = arguments?.getSerializable(ARG_USERS) as ArrayList<User>
+            tags = arguments?.getSerializable(ARG_TAGS) as ArrayList<Tag>
             requireArguments().getSerializable(ARG_TASK) as Task
         } else {
             Task.emptyTask()
         }
-
     }
 
     override fun onCreateView(
@@ -154,9 +157,10 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
             adapter = subtasksAdapter
         }
 
+        tagsAdapter = TagAdapter()
         view.findViewById<RecyclerView>(R.id.tagsRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = TagAdapter()
+            adapter = tagsAdapter
         }
 
         return view
@@ -164,10 +168,11 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(task: Task, users: ArrayList<User>) = TaskView().apply {
+        fun newInstance(task: Task, users: ArrayList<User>, tags: ArrayList<Tag>) = TaskView().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_TASK, task)
                     putSerializable(ARG_USERS, users)
+                    putSerializable(ARG_TAGS, tags)
                 }
             }
     }
@@ -204,7 +209,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
 
             inner class NewClick : View.OnClickListener {
                 override fun onClick(view: View?) {
-                    Toast.makeText(context, "onClick New", Toast.LENGTH_SHORT).show()
+                    TagListFragment.newInstance(ArrayList(tags)).show(childFragmentManager, null)
                 }
             }
         }
@@ -358,5 +363,14 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener {
     override fun onFinishAssigneeDialog(assignee: User) {
         requireView().findViewById<AssigneeComponent>(R.id.assignee).user = assignee
         task.assignee = assignee
+    }
+
+    override fun onFinishTagDialog(tag: Tag) {
+        if(!task.tags.contains(tag)) {
+            task.tags.add(tag)
+            tagsAdapter.notifyItemInserted(task.tags.size)
+        } else {
+            Toast.makeText(context, "Tag already added", Toast.LENGTH_SHORT).show()
+        }
     }
 }
