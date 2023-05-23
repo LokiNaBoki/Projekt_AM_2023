@@ -3,6 +3,10 @@ package com.example.projekt_am_2023
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.graphics.Color
+import android.util.Log
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -142,9 +146,39 @@ class MainActivity : AppCompatActivity() {
 
         tasks[0].tasks[0].subtasks.add(tasks[0].tasks[1])
         tasks[0].tasks[0].subtasks.add(tasks[1].tasks[1])
-
         tasks[4].tasks[0].subtasks.add(tasks[2].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[3].tasks[1])
         tasks[4].tasks[0].subtasks.add(tasks[4].tasks[1])
+
+//        user1.saveDatabase()
+//        user2.saveDatabase()
+//        tag1.saveDatabase()
+//        tag2.saveDatabase()
+//        tasks[0].tasks[1].saveDatabase()
+//        tasks[1].tasks[1].saveDatabase()
+//        tasks[2].tasks[1].saveDatabase()
+//        tasks[3].tasks[1].saveDatabase()
+//        tasks[4].tasks[1].saveDatabase()
+//        for(s in tasks){
+//            for(t in s.tasks){
+//                t.saveDatabase()
+//            }
+//            s.saveDatabase()
+//        }
+
+//        val postListener = object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                var tasks = DatabaseLoader.loadDatabase(dataSnapshot)
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
+//            }
+//        }
+//
+//        DatabaseLoader.dataref.addValueEventListener(postListener)
+
     }
 }
+
+
