@@ -309,6 +309,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
                     val i = Intent(context, EditTask::class.java)
                     i.putExtra("task", task.subtasks[adapterPosition])
                     i.putExtra("users", users)
+                    i.putExtra("tags", tags)
                     i.putExtra("index", adapterPosition)
                     editResult.launch(i)
                 }
@@ -324,6 +325,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
                 override fun onClick(view: View?) {
                     val i = Intent(context, AddTask::class.java)
                     i.putExtra("users", users)
+                    i.putExtra("tags", tags)
                     addResult.launch(i)
                 }
             }
