@@ -1,6 +1,5 @@
 package com.example.projekt_am_2023
 
-import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
@@ -11,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Button
-import android.widget.TextView
-import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.fragment.app.DialogFragment
@@ -97,34 +94,29 @@ class TagListFragment : DialogFragment() {
 
     inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-            val name: TextView
             init {
-                this.name = view.findViewById(R.id.tagName)
-                this.name.setOnClickListener(this)
+                view.setOnClickListener(this)
             }
 
             override fun onClick(view: View?) {
-                listener?.onFinishTagDialog(tags[adapterPosition]);
+                listener.onFinishTagDialog(tags[adapterPosition]);
                 dismiss();
             }
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.tag, viewGroup, false).apply {
-                    layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
-                        updateMargins(bottom = (10 * resources.displayMetrics.density).toInt())
-                        updateLayoutParams<ViewGroup.LayoutParams> {
-                            height = ViewGroup.LayoutParams.WRAP_CONTENT
-                        }
-                    }
-                })
+            return ViewHolder(TagComponent(viewGroup.context))
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.name.apply {
-                text = tags[position].name
-                backgroundTintList = ColorStateList.valueOf(tags[position].color)
+            (viewHolder.itemView as TagComponent).apply{
+                layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    updateMargins(bottom = (10 * resources.displayMetrics.density).toInt())
+                    updateLayoutParams<ViewGroup.LayoutParams> {
+                        width = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                }
+                setTag(tags[position])
             }
         }
 

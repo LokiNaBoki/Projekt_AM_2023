@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +18,8 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -192,17 +193,19 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
         }
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val name: TextView
+            val text: TextView?
 
             init {
-                name = view.findViewById(R.id.tagName) ?: view.findViewById(R.id.newText)
+                text = view.findViewById(R.id.newText)
 
                 view.findViewById<ConstraintLayout>(R.id.newElementLayout)?.apply {
                     setOnClickListener(NewClick())
                 }
 
-                view.findViewById<ConstraintLayout>(R.id.tagLayout)?.apply {
-                    setOnClickListener(TagClick())
+                if(text == null) {
+                    view.apply {
+                        setOnClickListener(TagClick())
+                    }
                 }
             }
 
@@ -227,8 +230,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
                         .inflate(R.layout.new_element, viewGroup, false))
                 }
                 REGULAR -> {
-                    ViewHolder(LayoutInflater.from(viewGroup.context)
-                        .inflate(R.layout.tag, viewGroup, false))
+                    ViewHolder(TagComponent(viewGroup.context))
                 }
                 else -> throw IllegalArgumentException("Invalid view type")
             }
@@ -237,16 +239,20 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             when (viewHolder.itemViewType) {
                 ADDTAG -> {
-                    viewHolder.name.apply {
+                    viewHolder.text!!.apply {
                         text = getString(R.string.addTag)
                     }
                 }
                 REGULAR -> {
-                    viewHolder.name.apply{
-                        text = task.tags[position].name
-                        backgroundTintList = ColorStateList.valueOf(task.tags[position].color)
+                    (viewHolder.itemView as TagComponent).apply{
+                        layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                            updateMargins(right = (10 * resources.displayMetrics.density).toInt())
+                            updateLayoutParams<ViewGroup.LayoutParams> {
+                                height = ViewGroup.LayoutParams.MATCH_PARENT
+                            }
+                        }
+                        setTag(task.tags[position])
                     }
-
                 }
             }
         }
@@ -378,6 +384,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
             task.tags.add(tag)
             tagsAdapter.notifyItemInserted(task.tags.size)
         } else {
+            val i = task.tags.indexOf(tag)
             Toast.makeText(context, "Tag already added", Toast.LENGTH_SHORT).show()
         }
     }
