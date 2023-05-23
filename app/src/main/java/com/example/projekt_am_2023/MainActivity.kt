@@ -166,25 +166,17 @@ class MainActivity : AppCompatActivity() {
 //            s.saveDatabase()
 //        }
 
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.i("Firebase", "Tasks to load $dataSnapshot")
-                var tasks = DatabaseLoader.loadDatabase(dataSnapshot)
-//                val sections = dataSnapshot.getValue<MutableList<Section>>()
-                Log.i("Firebase", "Tasks loaded ${tasks[0].name}")
-                Log.i("Firebase", "Tasks loaded ${tasks[0].tasks[0].title}")
-//                if(tasks[0].tasks[0].title == "Task 4.2"){
-//                    tasks[0].tasks[0].title = "Changed Title"
-//                    tasks[0].tasks[0].saveDatabase()
-//                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
-            }
-        }
-        DatabaseLoader.dataref.addValueEventListener(postListener)
+//        val postListener = object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                var tasks = DatabaseLoader.loadDatabase(dataSnapshot)
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
+//            }
+//        }
+//
+//        DatabaseLoader.dataref.addValueEventListener(postListener)
 
     }
 }
