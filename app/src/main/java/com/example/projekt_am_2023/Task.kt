@@ -16,6 +16,7 @@ data class Task(
     var Description: String?=null,
     var subtasks: MutableList<Task> = mutableListOf(),
     var tags: MutableList<Tag> = mutableListOf(),
+    var section: Section? = null,
     var subtasksHashes: MutableList<String> = mutableListOf(),
     var databaseId: String?=null
 ) : Serializable {
