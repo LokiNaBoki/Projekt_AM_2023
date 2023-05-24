@@ -27,7 +27,8 @@ import java.util.Calendar
 
 private const val ARG_TASK = "task"
 
-class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFragment.TagDialogListener {
+class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
+                 TagListFragment.TagDialogListener, SectionListFragment.SectionDialogListener {
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
     private lateinit var tagsAdapter: TagAdapter
@@ -99,6 +100,13 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
                 task.assignee = null
                 user = task.assignee
                 true
+            }
+        }
+
+        view.findViewById<TextView>(R.id.sectionText).apply {
+            text = task.section?.name ?: ""
+            setOnClickListener {
+                SectionListFragment.newInstance().show(childFragmentManager, null)
             }
         }
 
@@ -375,5 +383,10 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
             val i = task.tags.indexOf(tag)
             Toast.makeText(context, "Tag already added", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onFinishSectionDialog(section: Section) {
+        requireView().findViewById<TextView>(R.id.sectionText).text = section.name
+        task.section = section
     }
 }

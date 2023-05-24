@@ -19,7 +19,7 @@ class AddTask : AppCompatActivity() {
     }
 
     fun onSave(ignoredView: View) {
-        if(task.title.isEmpty()) {
+        if(task.title.isEmpty() || task.section == null) {
             setResult(Activity.RESULT_CANCELED)
         } else {
             task.saveDatabase()

@@ -30,4 +30,6 @@
     <string name="userListTitle">Select assignee</string>
     <string name="tagListTitle">Select tag</string>
     <string name="sectionListTitle">Select section</string>
+    <string name="sectionHint">Section</string>
+    <string name="sectionLabel">Section</string>
 </resources>
