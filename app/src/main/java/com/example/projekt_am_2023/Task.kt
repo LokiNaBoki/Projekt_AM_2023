@@ -36,16 +36,16 @@ data class Task(
 //            return tasks
 //        }
 
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag> , users:HashMap<String,User>): HashMap<String,Task> {
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag>, users:HashMap<String,User>, sections:HashMap<String,Section>): HashMap<String,Task> {
             var elements = HashMap<String,Task>()
             for (d in dataSnapshot.children){
-                val element = loadDatabase(d,tags,users)
+                val element = loadDatabase(d,tags,users,sections)
                 elements[element.databaseId!!] = element
             }
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag> , users:HashMap<String,User>) : Task{
+        fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag> , users:HashMap<String,User>, sections:HashMap<String,Section>) : Task{
 //            Log.i("Firebase",""+dataSnapshot)
             var task : Task = Task()
             task.databaseId = dataSnapshot.key
@@ -73,6 +73,8 @@ data class Task(
             }
 
             task.Description = dataSnapshot.child("Description").value as String?
+            task.section = sections[dataSnapshot.child("section").value]
+
             for(t in dataSnapshot.child("subtasks").children){
                 task.subtasksHashes.add(t.key!!)
             }
@@ -127,6 +129,16 @@ data class Task(
             tags[t.databaseId!!] = true
         }
 
+        if(this.assignee != null && this.assignee!!.databaseId == null){
+            Log.w("Firebase","User not in database.")
+            return
+        }
+
+        if(this.section != null && this.section!!.databaseId == null){
+            Log.w("Firebase","Section not in database.")
+            return
+        }
+
 
         val postValues = hashMapOf<String, Any?>(
             "title" to this.title,
@@ -135,6 +147,7 @@ data class Task(
             "startCalendar" to (this.startCalendar?.time?.time),
             "endCalendar" to (this.endCalendar?.time?.time),
             "description" to this.Description,
+            "section" to this.section?.databaseId,
             "subtasks" to subtasks,
             "tags" to tags
         )

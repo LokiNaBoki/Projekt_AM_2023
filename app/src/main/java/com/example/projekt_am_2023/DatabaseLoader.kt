@@ -19,10 +19,11 @@ class DatabaseLoader {
         fun loadDatabase(dataSnapshot: DataSnapshot) : MutableList<Section> {
             var tagsMap = Tag.loadDatabaseMap(dataSnapshot.child("tags"))
             var usersMap = User.loadDatabaseMap(dataSnapshot.child("users"))
-            var tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"),tagsMap,usersMap)
+            var sectionsMap = Section.loadDatabaseMap(dataSnapshot.child("sections"))
+            var tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"),tagsMap,usersMap,sectionsMap)
 
             Task.assignSubtasks(tasksMap)
-            var sectionsMap = Section.loadDatabaseMap(dataSnapshot.child("sections"),tasksMap)
+            Section.assignTasks(tasksMap)
 
             return sectionsMap.values.toMutableList()
         }
