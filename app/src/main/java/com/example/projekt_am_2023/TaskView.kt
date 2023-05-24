@@ -26,12 +26,8 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
 private const val ARG_TASK = "task"
-private const val ARG_USERS = "users"
-private const val ARG_TAGS = "tags"
 
 class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFragment.TagDialogListener {
-    private var users: ArrayList<User> = arrayListOf()
-    private var tags: ArrayList<Tag> = arrayListOf()
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
     private lateinit var tagsAdapter: TagAdapter
@@ -63,8 +59,6 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
         super.onCreate(savedInstanceState)
 
         task = if (arguments != null) {
-            users = arguments?.getSerializable(ARG_USERS) as ArrayList<User>
-            tags = arguments?.getSerializable(ARG_TAGS) as ArrayList<Tag>
             requireArguments().getSerializable(ARG_TASK) as Task
         } else {
             Task.emptyTask()
@@ -175,11 +169,9 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
 
     companion object {
         @JvmStatic
-        fun newInstance(task: Task, users: ArrayList<User>, tags: ArrayList<Tag>) = TaskView().apply {
+        fun newInstance(task: Task) = TaskView().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_TASK, task)
-                    putSerializable(ARG_USERS, users)
-                    putSerializable(ARG_TAGS, tags)
                 }
             }
     }
@@ -314,8 +306,6 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
                 override fun onClick(view: View?) {
                     val i = Intent(context, EditTask::class.java)
                     i.putExtra("task", task.subtasks[adapterPosition])
-                    i.putExtra("users", users)
-                    i.putExtra("tags", tags)
                     i.putExtra("index", adapterPosition)
                     editResult.launch(i)
                 }
@@ -330,8 +320,6 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
             inner class NewClick : View.OnClickListener {
                 override fun onClick(view: View?) {
                     val i = Intent(context, AddTask::class.java)
-                    i.putExtra("users", users)
-                    i.putExtra("tags", tags)
                     addResult.launch(i)
                 }
             }

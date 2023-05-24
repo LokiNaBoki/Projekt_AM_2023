@@ -14,10 +14,7 @@ class AddTask : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_task)
 
-        val users = intent.extras!!.getSerializable("users") as ArrayList<User>
-        val tags = intent.extras!!.getSerializable("tags") as ArrayList<Tag>
-
-        fragment = TaskView.newInstance(task, users, tags)
+        fragment = TaskView.newInstance(task)
         supportFragmentManager.beginTransaction().replace(R.id.editTaskFragment, fragment).commit()
     }
 

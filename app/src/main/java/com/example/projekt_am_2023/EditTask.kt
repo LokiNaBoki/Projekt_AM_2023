@@ -19,10 +19,8 @@ class EditTask : AppCompatActivity() {
         task = intent.extras!!.getSerializable("task") as Task
         index = intent.extras!!.getInt("index")
         section = intent.extras!!.getInt("section")
-        val users = intent.extras!!.getSerializable("users") as ArrayList<User>
-        val tags = intent.extras!!.getSerializable("tags") as ArrayList<Tag>
 
-        fragment = TaskView.newInstance(task, users, tags)
+        fragment = TaskView.newInstance(task)
         supportFragmentManager.beginTransaction().replace(R.id.editTaskFragment, fragment).commit()
     }
 
