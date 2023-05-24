@@ -29,4 +29,5 @@
     <string name="addSubtask">New subtask</string>
     <string name="userListTitle">Select assignee</string>
     <string name="tagListTitle">Select tag</string>
+    <string name="sectionListTitle">Select section</string>
 </resources>
