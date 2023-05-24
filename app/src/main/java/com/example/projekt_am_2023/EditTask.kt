@@ -8,8 +8,6 @@ import android.view.View
 import android.widget.Toast
 
 class EditTask : AppCompatActivity() {
-    private var index: Int = 0
-    private var section: Int = 0
     private lateinit var task: Task
     private lateinit var fragment: TaskView
 
@@ -18,9 +16,6 @@ class EditTask : AppCompatActivity() {
         setContentView(R.layout.activity_edit_task)
 
         task = intent.extras!!.getSerializable("task") as Task
-        index = intent.extras!!.getInt("index")
-        section = intent.extras!!.getInt("section")
-
         fragment = TaskView.newInstance(task)
         supportFragmentManager.beginTransaction().replace(R.id.editTaskFragment, fragment).commit()
     }
@@ -32,11 +27,11 @@ class EditTask : AppCompatActivity() {
             Toast.makeText(this, "Task's section cannot be empty", Toast.LENGTH_SHORT).show()
         } else {
             task.saveDatabase()
+
             val result = Intent().apply {
                 putExtra("task", task)
-                putExtra("index", index)
-                putExtra("section", section)
             }
+
             setResult(Activity.RESULT_OK, result);
             finish()
         }

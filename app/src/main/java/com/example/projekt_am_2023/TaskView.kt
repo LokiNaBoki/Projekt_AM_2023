@@ -264,7 +264,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
         if(result.resultCode == Activity.RESULT_OK) {
             Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
             val newTask = (result.data!!.getSerializableExtra("task") as Task)
-            val index = result.data!!.getIntExtra("index", 0)
+            val index = task.subtasks.indexOfFirst { s -> s.databaseId == newTask.databaseId }
             task.subtasks[index] = newTask
             subtasksAdapter.notifyItemChanged(index)
         } else {
@@ -314,7 +314,6 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
                 override fun onClick(view: View?) {
                     val i = Intent(context, EditTask::class.java)
                     i.putExtra("task", task.subtasks[adapterPosition])
-                    i.putExtra("index", adapterPosition)
                     editResult.launch(i)
                 }
 
