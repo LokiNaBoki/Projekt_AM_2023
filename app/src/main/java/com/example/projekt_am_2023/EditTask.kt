@@ -25,12 +25,18 @@ class EditTask : AppCompatActivity() {
     }
 
     fun onSave(ignoredView: View) {
-        val result = Intent().apply {
-            putExtra("task", task)
-            putExtra("index", index)
-            putExtra("section", section)
+        if(task.title.isEmpty()) {
+            setResult(Activity.RESULT_CANCELED)
+        } else {
+            task.saveDatabase()
+            val result = Intent().apply {
+                putExtra("task", task)
+                putExtra("index", index)
+                putExtra("section", section)
+            }
+            setResult(Activity.RESULT_OK, result);
         }
-        setResult(Activity.RESULT_OK, result);
+
         finish()
     }
 
