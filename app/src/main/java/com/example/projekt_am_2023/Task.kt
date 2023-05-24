@@ -89,7 +89,7 @@ data class Task(
             for(t in tasksMap){
                 for(sub in t.value.subtasksHashes){
                     if(tasksMap.containsKey(sub)){
-                        t.value.subtasks.add(tasksMap[t.key]!!)
+                        t.value.subtasks.add(tasksMap[sub]!!)
                     }
                 }
             }
