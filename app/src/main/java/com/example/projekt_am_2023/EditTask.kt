@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 
 class EditTask : AppCompatActivity() {
     private var index: Int = 0
@@ -25,8 +26,10 @@ class EditTask : AppCompatActivity() {
     }
 
     fun onSave(ignoredView: View) {
-        if(task.title.isEmpty() || task.section == null) {
-            setResult(Activity.RESULT_CANCELED)
+        if(task.title.isEmpty()) {
+            Toast.makeText(this, "Task's title cannot be empty", Toast.LENGTH_SHORT).show()
+        } else if(task.section == null) {
+            Toast.makeText(this, "Task's section cannot be empty", Toast.LENGTH_SHORT).show()
         } else {
             task.saveDatabase()
             val result = Intent().apply {
@@ -35,9 +38,8 @@ class EditTask : AppCompatActivity() {
                 putExtra("section", section)
             }
             setResult(Activity.RESULT_OK, result);
+            finish()
         }
-
-        finish()
     }
 
     fun onCancel(ignoredView: View) {
