@@ -4,6 +4,7 @@ import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,22 +16,34 @@ import androidx.core.view.updateMargins
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-private const val ARG_TAGS = "tags"
-
 class TagListFragment : DialogFragment() {
-    private lateinit var tags: ArrayList<Tag>
+    private var tags: MutableList<Tag> = mutableListOf()
     private lateinit var listener: TagDialogListener
+    private lateinit var tagAdapter: TagAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tags = requireArguments().getSerializable(ARG_TAGS) as ArrayList<Tag>
         listener = if(parentFragment == null) {
             requireContext() as TagDialogListener
         } else {
             parentFragment as TagDialogListener
         }
+
+        DatabaseLoader.tags.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                tags = Tag.loadDatabaseArray(dataSnapshot)
+                tagAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Firebase", "tags - loadPost:onCancelled", databaseError.toException())
+            }
+        })
     }
 
     override fun onCreateView(
@@ -39,9 +52,10 @@ class TagListFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tag_list, container, false)
 
+        tagAdapter = TagAdapter()
         view.findViewById<RecyclerView>(R.id.tagRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = TagAdapter()
+            adapter = tagAdapter
         }
 
         view.findViewById<Button>(R.id.cancel).setOnClickListener { dismiss() }
@@ -80,12 +94,9 @@ class TagListFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(tags: ArrayList<Tag>) =
-            TagListFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_TAGS, tags)
-                }
-            }
+        fun newInstance() = TagListFragment().apply {
+            arguments = Bundle().apply { }
+        }
     }
 
     interface TagDialogListener : Serializable {

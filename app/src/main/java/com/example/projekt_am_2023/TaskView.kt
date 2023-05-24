@@ -218,7 +218,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
 
             inner class NewClick : View.OnClickListener {
                 override fun onClick(view: View?) {
-                    TagListFragment.newInstance(ArrayList(tags)).show(childFragmentManager, null)
+                    TagListFragment.newInstance().show(childFragmentManager, null)
                 }
             }
         }
