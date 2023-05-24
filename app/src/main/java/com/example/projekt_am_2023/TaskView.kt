@@ -98,7 +98,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener, TagListFra
         view.findViewById<AssigneeComponent>(R.id.assignee).apply {
             user = task.assignee
             setOnClickListener {
-                UserListFragment.newInstance(ArrayList(users)).show(childFragmentManager, null)
+                UserListFragment.newInstance().show(childFragmentManager, null)
             }
 
             setOnLongClickListener {

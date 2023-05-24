@@ -4,6 +4,7 @@ import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,22 +14,34 @@ import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-private const val ARG_USERS = "users"
-
 class UserListFragment : DialogFragment() {
-    private lateinit var assignees: ArrayList<User>
+    private var assignees: MutableList<User> = mutableListOf()
     private lateinit var listener: AssigneeDialogListener
+    private lateinit var assigneeAdapter: AssigneeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        assignees = requireArguments().getSerializable(ARG_USERS) as ArrayList<User>
         listener = if(parentFragment == null) {
             requireContext() as AssigneeDialogListener
         } else {
             parentFragment as AssigneeDialogListener
         }
+
+        DatabaseLoader.users.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                assignees = User.loadDatabaseArray(dataSnapshot)
+                assigneeAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Firebase", "users - loadPost:onCancelled", databaseError.toException())
+            }
+        })
     }
 
     override fun onCreateView(
@@ -37,9 +50,10 @@ class UserListFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_list, container, false)
 
+        assigneeAdapter = AssigneeAdapter()
         view.findViewById<RecyclerView>(R.id.assigneeRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = AssigneeAdapter(assignees)
+            adapter = assigneeAdapter
         }
 
         view.findViewById<Button>(R.id.cancel).setOnClickListener { dismiss() }
@@ -78,19 +92,16 @@ class UserListFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(users: ArrayList<User>) =
-            UserListFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_USERS, users)
-                }
-            }
+        fun newInstance() = UserListFragment().apply {
+            arguments = Bundle().apply { }
+        }
     }
 
     interface AssigneeDialogListener : Serializable {
         fun onFinishAssigneeDialog(assignee: User)
     }
 
-    inner class AssigneeAdapter(private var assignees: List<User>) : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
+    inner class AssigneeAdapter() : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
             val view: AssigneeComponent
             init {
