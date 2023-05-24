@@ -2,12 +2,13 @@ package com.example.projekt_am_2023
 
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
+import java.io.Serializable
 
 data class Section(
     var name: String = "",
     var tasks: MutableList<Task> = mutableListOf(), //is not saved to the database
     var databaseId: String? = null
-    ){
+    ) : Serializable {
 
     fun saveDatabase(){
         var key : String?
