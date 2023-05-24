@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Projekt_AM_2023</string>
+    <string name="tagNameLabel">Name:</string>
+    <string name="tagNameHint">Name of the tag</string>
+    <string name="colorLabel">Color:</string>
+    <string name="previewLabel">Preview:</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="confirm">Confirm</string>
+    <string name="tagColor">tag color</string>
+    <string name="tagColorPicker">Tag color</string>
 </resources>

@@ -48,4 +48,5 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-database-ktx'
 
+    implementation "com.github.skydoves:colorpickerview:2.2.4"
 }
