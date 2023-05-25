@@ -77,7 +77,7 @@ class ListView : Fragment() {
         listViewRecycler = view.findViewById(R.id.listViewRecycler)
         listViewRecycler.layoutManager = LinearLayoutManager(view.context)
         tasks = ArrayList()
-
+        trimmedTasks = ArrayList()
         listViewAdapter = ListViewAdapter()
         listViewRecycler.adapter = listViewAdapter
 
@@ -189,9 +189,7 @@ class ListView : Fragment() {
                 }
                 tmp.findViewById<TextView>(R.id.taskTitle).text = task.title
                 tmp.findViewById<TextView>(R.id.taskDate).text = task.getEndDate()
-                val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
-                val drawable = ContextCompat.getDrawable(requireContext(), drawableId)
-                tmp.findViewById<ImageView>(R.id.userImage).setImageDrawable(drawable)
+                task.assignee?.loadAvatar(requireContext(), tmp.findViewById(R.id.userImage))
                 val listener = SubtaskListener(task)
                 tmp.setOnClickListener(listener)
                 viewHolder.tasksRecycler.addView(tmp)
