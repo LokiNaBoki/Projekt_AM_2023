@@ -10,4 +10,26 @@
     <string name="confirm">Confirm</string>
     <string name="tagColor">tag color</string>
     <string name="tagColorPicker">Tag color</string>
+    <string name="titleHint">Task title</string>
+    <string name="userHint">User name</string>
+    <string name="dateLabel">Date</string>
+    <string name="startLabel">Start</string>
+    <string name="startDateHint">Date</string>
+    <string name="startTimeHint">Time</string>
+    <string name="endLabel">End</string>
+    <string name="endDateHint">Date</string>
+    <string name="endTimeHint">Time</string>
+    <string name="descriptionLabel">Description</string>
+    <string name="descriptionHint">Add more details…</string>
+    <string name="subtasksLabel">Subtasks</string>
+    <string name="tagsLabel">Tags</string>
+    <string name="userImageDescription">User avatar</string>
+    <string name="descriptionDescription">Description of a task</string>
+    <string name="addTag">New Tag</string>
+    <string name="addSubtask">New subtask</string>
+    <string name="userListTitle">Select assignee</string>
+    <string name="tagListTitle">Select tag</string>
+    <string name="sectionListTitle">Select section</string>
+    <string name="sectionHint">Section</string>
+    <string name="sectionLabel">Section</string>
 </resources>
