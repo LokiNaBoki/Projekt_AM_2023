@@ -6,15 +6,6 @@ import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import android.graphics.Color
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private var tasks: MutableList<Section> = mutableListOf()
@@ -56,24 +47,4 @@ class MainActivity : AppCompatActivity() {
         })
     }
 }
-/*
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
-        val ft = supportFragmentManager.beginTransaction()
-        val calendar = Calendar.getInstance().apply { time = sdf.parse("2023-04-29 10:10")!! }
-        Log.i("month", calendar.time.toString())
-        Log.i("month", calendar.get(Calendar.MONTH).toString())
-        calendar.set(Calendar.MONTH, 4)
-        Log.i("month", calendar.time.toString())
-        Log.i("month", calendar.get(Calendar.MONTH).toString())
-        val mFragment = ListView.newInstance()
-        ft.replace(R.id.fragment1, mFragment)
-        ft.commit()
-        //Thread.sleep(5000)
-        //ListView().changeDate(Calendar.getInstance().apply { time = sdf.parse("2023-05-28 10:10")!! })
-        findViewById<Button>(R.id.button).setOnClickListener {
-            mFragment.changeDate(Calendar.getInstance().apply { time = sdf.parse("2023-04-29 10:10")!! })
-        }
-    }
-
-}*/

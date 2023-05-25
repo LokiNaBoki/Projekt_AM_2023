@@ -1,7 +1,5 @@
 package com.example.projekt_am_2023
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,9 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.text.SimpleDateFormat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.util.Calendar
-import java.util.Locale
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -38,7 +37,6 @@ class ListView : Fragment() {
     inner class SubtaskListener(private val task: Task) : View.OnClickListener {
         override fun onClick(view: View?) {
             Toast.makeText(context, "onClick ${task.title}", Toast.LENGTH_SHORT).show()
-            //calendar.get(Calendar.DAY_OF_MONTH)
         }
     }
 
@@ -60,14 +58,11 @@ class ListView : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Toast.makeText(activity, (arguments?.getInt(ARG_PARAM2)).toString(), Toast.LENGTH_SHORT).show()
         arguments?.let {
             day = it.getInt(ARG_PARAM1)
             month = it.getInt(ARG_PARAM2)
             year = it.getInt(ARG_PARAM3)
         }
-        month = month!! - 1
-        Log.i("data", "$day $month $year")
     }
 
     override fun onCreateView(
@@ -79,15 +74,24 @@ class ListView : Fragment() {
 
         listViewRecycler = view.findViewById(R.id.listViewRecycler)
         listViewRecycler.layoutManager = LinearLayoutManager(view.context)
-        tasks = generateData()
+        tasks = ArrayList()
 
-        if (day == -1)
-            trimmedTasks = tasks
-        else {
-            trimmedTasks = switchAdapterDate()
-        }
         listViewAdapter = ListViewAdapter()
         listViewRecycler.adapter = listViewAdapter
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                tasks = DatabaseLoader.loadDatabase(dataSnapshot)
+                trimmedTasks = switchAdapterDate()
+                listViewAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        DatabaseLoader.dataref.addValueEventListener(postListener)
+
         return view
     }
 
@@ -101,24 +105,28 @@ class ListView : Fragment() {
     }
 
     private fun switchAdapterDate(): List<Section> {
-        var i = -1
-        val trimmedTasks = ArrayList<Section>()
-        for (section in tasks) {
-            for (task in section.tasks) {
-                if (
-                    (task.endCalendar?.get(Calendar.DAY_OF_MONTH) == day) and
-                    (month == task.endCalendar?.get(Calendar.MONTH)) and
-                    (year == task.endCalendar?.get(Calendar.YEAR))
-                ) {
-                    if (trimmedTasks.isEmpty() || trimmedTasks.last().name != section.name) {
-                        trimmedTasks.add(Section(section.name, ArrayList()))
-                        i += 1
+        if (year == -1)
+            return tasks
+        else {
+            var i = -1
+            val temp = ArrayList<Section>()
+            for (section in tasks) {
+                for (task in section.tasks) {
+                    if (
+                        (task.endCalendar?.get(Calendar.DAY_OF_MONTH) == day)
+                        and (month == task.endCalendar?.get(Calendar.MONTH))
+                        and (year == task.endCalendar?.get(Calendar.YEAR))
+                    ) {
+                        if (temp.isEmpty() || temp.last().name != section.name) {
+                            temp.add(Section(section.name, ArrayList()))
+                            i += 1
+                        }
+                        temp[i].tasks.add(task)
                     }
-                    trimmedTasks[i].tasks.add(task)
                 }
             }
+        return temp
         }
-        return trimmedTasks
     }
 
     companion object {
@@ -147,8 +155,7 @@ class ListView : Fragment() {
         }
     }
 
-
-    inner class ListViewAdapter() : RecyclerView.Adapter<ListViewAdapter.ViewHolder>() {
+    inner class ListViewAdapter : RecyclerView.Adapter<ListViewAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val name: TextView = view.findViewById(R.id.sectionTitle)
@@ -186,127 +193,5 @@ class ListView : Fragment() {
             val listener = HideTasksListener(viewHolder, trimmedTasks[position].tasks.size)
             viewHolder.hideButton.setOnClickListener(listener)
         }
-    }
-
-    private fun generateData() : List<Section> {
-        val user1 = User("User 1", R.drawable.user1)
-        val user2 = User("User 2", R.drawable.user2)
-
-        val tag1 = Tag("First", Color.RED)
-        val tag2 = Tag("First", Color.BLUE)
-
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-
-        return mutableListOf(
-            Section(
-                "Section 1",
-                mutableListOf(
-                    Task(
-                        "Task 1.1", false, user1,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-27 10:10")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-28 11:11")!! },
-                        "Description of task 1.1", mutableListOf(), mutableListOf(tag1)
-                    ),
-                    Task(
-                        "Task 1.2", false, user1,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-26 09:05")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 12:20")!! },
-                        "Description of task 1.2", mutableListOf(), mutableListOf(tag1, tag2)
-                    )
-                )
-            ),
-            Section(
-                "Section 2",
-                mutableListOf(
-                    Task(
-                        "Task 2.1", false, user1,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 02:09")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 02:19")!! },
-                        "Description of task 1.1", mutableListOf(), mutableListOf(tag1)
-                    ),
-                    Task(
-                        "Task 2.2", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-26 09:05")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 12:20")!! },
-                        "Description of task 2.2", mutableListOf(), mutableListOf(tag1, tag2)
-                    ),
-                    Task(
-                        "Task 2.3", true, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-27 10:05")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-30 11:20")!! },
-                        "Description of task 2.2", mutableListOf(), mutableListOf(tag1, tag2)
-                    )
-                )
-            ),
-            Section(
-                "Section 3",
-                mutableListOf(
-                    Task(
-                        "Task 3.1", false, user1,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-03-03 05:05")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-05-05 03:03")!! },
-                        "Description of task 3.1", mutableListOf(), mutableListOf(tag2)
-                    ),
-                    Task(
-                        "Task 3.2", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-30 11:00")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-30 15:15")!! },
-                        "Description of task 3.2", mutableListOf(), mutableListOf(tag2)
-                    ),
-                    Task(
-                        "Task 3.3", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-28 15:00")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 20:11")!! },
-                        "Description of task 3.2", mutableListOf(), mutableListOf(tag1)
-                    )
-                )
-            ),
-            Section(
-                "Section 4",
-                mutableListOf(
-                    Task(
-                        "Task 4.1", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-03-28 17:05")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-05-28 19:03")!! },
-                        "Description of task 4.1", mutableListOf(), mutableListOf()
-                    ),
-                    Task(
-                        "Task 4.2", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-29 12:00")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-30 13:00")!! },
-                        null, mutableListOf(), mutableListOf(tag2)
-                    ),
-                )
-            ),
-            Section(
-                "Section 5",
-                mutableListOf(
-                    Task(
-                        "Task 5.1", false, null,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-06-06 06:06")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-06-07 06:07")!! },
-                        "Description of task 5.1", mutableListOf(), mutableListOf(tag2)
-                    ),
-                    Task(
-                        "Task 5.2", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-05-07 12:12")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-07-05 13:13")!! },
-                        "Description of task 5.2", mutableListOf(), mutableListOf(tag1)
-                    ),
-                    Task(
-                        "Task 5.3", false, user2,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-09-09 09:09")!! },
-                        null,
-                        "Description of task 5.3", mutableListOf(), mutableListOf(tag1)
-                    ),
-                    Task(
-                        "Task 5.4", false, user1,
-                        null,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-06-06 20:00")!! },
-                        "Description of task 5.4", mutableListOf(), mutableListOf(tag2)
-                    ),
-                )
-            ),
-        )
     }
 }
