@@ -1,5 +1,6 @@
 package com.example.projekt_am_2023
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,7 +36,9 @@ class ListView : Fragment() {
 
     inner class SubtaskListener(private val task: Task) : View.OnClickListener {
         override fun onClick(view: View?) {
-            Toast.makeText(context, "onClick ${task.title}", Toast.LENGTH_SHORT).show()
+            val i = Intent(context, EditTask::class.java)
+            i.putExtra("task", task)
+            startActivity(i)
         }
     }
 
@@ -181,6 +183,10 @@ class ListView : Fragment() {
             for (task in trimmedTasks[position].tasks) {
                 val tmp = LayoutInflater.from(context).inflate(R.layout.list_view_task, null, false)
                 tmp.findViewById<CheckBox>(R.id.doneCheckBox).isChecked = task.done
+                tmp.findViewById<CheckBox>(R.id.doneCheckBox).setOnCheckedChangeListener { _, b ->
+                    task.done = b
+                    task.saveDatabase()
+                }
                 tmp.findViewById<TextView>(R.id.taskTitle).text = task.title
                 tmp.findViewById<TextView>(R.id.taskDate).text = task.getEndDate()
                 val drawableId: Int = task.assignee?.avatar ?: R.drawable.user_default
