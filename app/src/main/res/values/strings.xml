@@ -32,4 +32,6 @@
     <string name="sectionListTitle">Select section</string>
     <string name="sectionHint">Section</string>
     <string name="sectionLabel">Section</string>
+    <string name="sectionNameLabel">Name:</string>
+    <string name="sectionNameHint">Section name</string>
 </resources>
