@@ -15,7 +15,7 @@ class AssigneeComponent : LinearLayout {
         get() = _user
         set(value) {
             _user = value
-//            updateUser()
+            updateUser()
         }
 
     constructor(context: Context)
@@ -39,13 +39,16 @@ class AssigneeComponent : LinearLayout {
         avatar = findViewById(R.id.userAvatar)
         name = findViewById(R.id.userName)
 
-//        updateUser()
+        updateUser()
     }
 
-//    private fun updateUser() {
-//        val drawableId: Int = user?.avatar ?: R.drawable.user_default
-//        val drawable = ContextCompat.getDrawable(context, drawableId)
-//        avatar.apply{ setImageDrawable(drawable) }
-//        name.apply{ text = user?.name ?: "" }
-//    }
+    private fun updateUser() {
+        if(user == null || user!!.avatar == null) {
+            val drawable = ContextCompat.getDrawable(context, R.drawable.user_default)
+            avatar.setImageDrawable(drawable)
+        } else {
+            user!!.loadAvatar(context, avatar)
+        }
+        name.apply{ text = user?.name ?: "" }
+    }
 }
