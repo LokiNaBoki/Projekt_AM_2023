@@ -1,50 +1,56 @@
 package com.example.projekt_am_2023
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
-    private var tasks: MutableList<Section> = mutableListOf()
-    private var users: MutableList<User> = mutableListOf()
-    private var tags: MutableList<Tag> = mutableListOf()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DatabaseLoader.dataref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                tasks = DatabaseLoader.loadDatabase(dataSnapshot)
-            }
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager2).apply {
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {})
+        }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Firebase", "dataref - loadPost:onCancelled", databaseError.toException())
-            }
-        })
+        val listFragment = ListView.newInstance()
+        val monthFragment = CalendarMonthView.newInstance()
 
-        DatabaseLoader.tags.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                tags = Tag.loadDatabaseArray(dataSnapshot)
-            }
+        viewPager.adapter = CustomStateAdapter(this).apply {
+            addFragment(listFragment)
+            addFragment(monthFragment)
+        }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Firebase", "tags - loadPost:onCancelled", databaseError.toException())
-            }
-        })
+        TabLayoutMediator(findViewById(R.id.tabLayout), viewPager) { tab, position ->
+            tab.setIcon(when(position) {
+                0 -> { R.drawable.list_icon }
+                1 -> { R.drawable.month_icon }
+                else -> { R.drawable.none_icon }
+            })
+            tab.text = getString(when(position) {
+                0 -> { R.string.listLabel }
+                1 -> { R.string.monthLabel }
+                else -> { R.string.noneLabel }
+            })
+        }.attach()
+    }
 
-        DatabaseLoader.users.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                users = User.loadDatabaseArray(dataSnapshot)
-            }
+    private class CustomStateAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        private val fragments = mutableListOf<Fragment>()
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Firebase", "users - loadPost:onCancelled", databaseError.toException())
-            }
-        })
+        fun addFragment(fragment: Fragment) = fragments.add(fragment)
+        override fun getItemCount(): Int = fragments.size
+        override fun createFragment(position: Int): Fragment = fragments[position]
+    }
+
+    fun onNewClick(ignoredView: View) {
+        startActivity(Intent(this, AddTask::class.java))
     }
 }
 

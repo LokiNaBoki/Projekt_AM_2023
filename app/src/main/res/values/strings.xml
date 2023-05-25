@@ -34,4 +34,7 @@
     <string name="sectionLabel">Section</string>
     <string name="sectionNameLabel">Name:</string>
     <string name="sectionNameHint">Section name</string>
+    <string name="listLabel">List</string>
+    <string name="monthLabel">Month</string>
+    <string name="noneLabel">?</string>
 </resources>
