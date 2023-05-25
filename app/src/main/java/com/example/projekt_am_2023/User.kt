@@ -1,12 +1,17 @@
 package com.example.projekt_am_2023
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.storage.UploadTask
 import java.io.Serializable
+import java.util.UUID
 
 data class User(
     var name: String="",
-    var avatar: Int?=null,
+    var avatar: String?=null,
     var databaseId: String?=null
 ) : Serializable{
     
@@ -37,6 +42,29 @@ data class User(
         DatabaseLoader.dataref.updateChildren(childUpdates)
     }
 
+    fun loadAvatar(context: Context, imageView:ImageView){
+        if(avatar!=null){
+            DatabaseLoader.loadImage("avatars/"+avatar!!, context, imageView)
+        }else{
+            Log.w("Data","User doesn't have avatar.")
+        }
+    }
+
+    fun updateAvatar(file: Uri) : UploadTask {
+        val fileStr = file.toString()
+        val name = UUID.randomUUID().toString()+fileStr.substring(fileStr.lastIndexOf("."));
+        val avRef = DatabaseLoader.storref.child("avatars/${name}")
+        val uploadTask = avRef.putFile(file)
+
+        uploadTask.addOnFailureListener {
+            Log.w("Firebase","Avatar upload failed.")
+        }.addOnSuccessListener { taskSnapshot ->
+            Log.i("Firebase","Avatar upload success.")
+            avatar = name
+        }
+        return uploadTask
+    }
+
     companion object{
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<User>{
             var users = mutableListOf<User>()
@@ -59,7 +87,7 @@ data class User(
             var user : User =  User()
             user.databaseId = dataSnapshot.key
             user.name = dataSnapshot.child("name").value as String
-            user.avatar = (dataSnapshot.child("avatar").value as Long?)?.toInt()
+            user.avatar = dataSnapshot.child("avatar").value as String?
             return user
         }
     }
