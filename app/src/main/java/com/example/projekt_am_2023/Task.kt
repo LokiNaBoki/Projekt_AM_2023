@@ -56,8 +56,9 @@ data class Task(
                 var time = dataSnapshot.child("startCalendar").value as Long?
                 var cal : Calendar? = null
                 if(time != null){
-                    cal = Calendar.getInstance()
-                    cal.time.time = time
+                    cal = Calendar.getInstance().apply {
+                        timeInMillis = time
+                    }
                 }
                 cal
             }
@@ -66,8 +67,9 @@ data class Task(
                 var time = dataSnapshot.child("endCalendar").value as Long?
                 var cal : Calendar? = null
                 if(time != null){
-                    cal = Calendar.getInstance()
-                    cal!!.time.time = time
+                    cal = Calendar.getInstance().apply {
+                        timeInMillis = time
+                    }
                 }
                 cal
             }
