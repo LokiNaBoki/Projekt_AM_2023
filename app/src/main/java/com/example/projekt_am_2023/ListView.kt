@@ -184,7 +184,7 @@ class ListView : Fragment() {
                 viewHolder.tasksRecycler.removeAllViews()
             }
             for (task in trimmedTasks[position].tasks) {
-                val tmp = LayoutInflater.from(context).inflate(R.layout.list_view_task, null, false)
+                val tmp = LayoutInflater.from(context).inflate(R.layout.list_view_task, viewHolder.tasksRecycler, false)
                 tmp.findViewById<CheckBox>(R.id.doneCheckBox).isChecked = task.done
                 tmp.findViewById<CheckBox>(R.id.doneCheckBox).setOnCheckedChangeListener { _, b ->
                     task.done = b

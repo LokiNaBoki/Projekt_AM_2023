@@ -47,5 +47,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/new_icon"
         app:tint="?android:attr/colorBackground"
-        android:contentDescription="@string/fab_description" />
+        android:contentDescription="@string/fab_description"
+        android:focusable="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>
