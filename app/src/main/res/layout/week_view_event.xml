@@ -7,7 +7,7 @@
     android:background="@android:color/system_accent3_400">
 
     <TextView
-        android:id="@+id/monthYear"
+        android:id="@+id/weekTaskTitle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="TextView"
