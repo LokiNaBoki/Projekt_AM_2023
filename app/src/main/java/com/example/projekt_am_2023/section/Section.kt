@@ -13,11 +13,10 @@ data class Section(
     ) : Serializable {
 
     fun saveDatabase(){
-        var key : String?
-        if(this.databaseId == null){
-            key = DatabaseLoader.sections.push().key
+        val key : String? = if(this.databaseId == null){
+            DatabaseLoader.sections.push().key
         }else{
-            key = this.databaseId
+            this.databaseId
         }
 
         if (key == null) {
@@ -38,7 +37,7 @@ data class Section(
 
     companion object{
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Section> {
-            var sections = mutableListOf<Section>()
+            val sections = mutableListOf<Section>()
             for (d in dataSnapshot.children){
                 sections.add(loadDatabase(d))
             }
@@ -46,7 +45,7 @@ data class Section(
         }
 
         fun loadDatabaseMap(dataSnapshot: DataSnapshot) : HashMap<String, Section> {
-            var elements = HashMap<String, Section>()
+            val elements = HashMap<String, Section>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -54,9 +53,9 @@ data class Section(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : Section {
+        private fun loadDatabase(dataSnapshot: DataSnapshot) : Section {
 //            Log.i("Firebase",""+dataSnapshot)
-            var section =  Section()
+            val section =  Section()
             section.databaseId = dataSnapshot.key
             section.name = dataSnapshot.child("name").value as String
             return section

@@ -41,7 +41,7 @@ data class Task(
 //        }
 
         fun loadDatabaseMap(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>): HashMap<String, Task> {
-            var elements = HashMap<String, Task>()
+            val elements = HashMap<String, Task>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d,tags,users,sections)
                 elements[element.databaseId!!] = element
@@ -49,15 +49,15 @@ data class Task(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>) : Task {
+        private fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>) : Task {
 //            Log.i("Firebase",""+dataSnapshot)
-            var task = Task()
+            val task = Task()
             task.databaseId = dataSnapshot.key
             task.title = dataSnapshot.child("title").value as String
             task.done = dataSnapshot.child("done").value as Boolean
             task.assignee = users[dataSnapshot.child("assignee").value]
             task.startCalendar = run{
-                var time = dataSnapshot.child("startCalendar").value as Long?
+                val time = dataSnapshot.child("startCalendar").value as Long?
                 var cal : Calendar? = null
                 if(time != null){
                     cal = Calendar.getInstance().apply {
@@ -68,7 +68,7 @@ data class Task(
             }
 
             task.endCalendar = run{
-                var time = dataSnapshot.child("endCalendar").value as Long?
+                val time = dataSnapshot.child("endCalendar").value as Long?
                 var cal : Calendar? = null
                 if(time != null){
                     cal = Calendar.getInstance().apply {
@@ -105,11 +105,10 @@ data class Task(
     }
 
     fun saveDatabase(){
-        var key : String?
-        if(this.databaseId == null){
-            key = DatabaseLoader.tasks.push().key
+        val key : String? = if(this.databaseId == null){
+            DatabaseLoader.tasks.push().key
         }else{
-            key = this.databaseId
+            this.databaseId
         }
 
         if (key == null) {
@@ -117,7 +116,7 @@ data class Task(
             return
         }
 
-        var subtasks = hashMapOf<String, Boolean>()
+        val subtasks = hashMapOf<String, Boolean>()
         for(t in this.subtasks){
             if(t.databaseId == null){
                 Log.w("Firebase","Subtask not in database.")
@@ -126,7 +125,7 @@ data class Task(
             subtasks[t.databaseId!!] = true
         }
 
-        var tags = hashMapOf<String, Boolean>()
+        val tags = hashMapOf<String, Boolean>()
         for(t in this.tags){
             if(t.databaseId == null){
                 Log.w("Firebase","Tag not in database.")

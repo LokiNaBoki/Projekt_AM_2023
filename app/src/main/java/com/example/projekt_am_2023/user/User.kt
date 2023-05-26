@@ -17,11 +17,10 @@ data class User(
 ) : Serializable{
     
     fun saveDatabase(){
-        var key : String?
-        if(this.databaseId == null){
-            key = DatabaseLoader.sections.push().key
+        val key : String? = if(this.databaseId == null){
+            DatabaseLoader.sections.push().key
         }else{
-            key = this.databaseId
+            this.databaseId
         }
 
         if (key == null) {
@@ -68,14 +67,14 @@ data class User(
 
     companion object{
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<User>{
-            var users = mutableListOf<User>()
+            val users = mutableListOf<User>()
             for (d in dataSnapshot.children) {
                 users.add(loadDatabase(d))
             }
             return users
         }
         fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, User> {
-            var elements = HashMap<String, User>()
+            val elements = HashMap<String, User>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -83,9 +82,9 @@ data class User(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : User {
+        private fun loadDatabase(dataSnapshot: DataSnapshot) : User {
 //            Log.i("Firebase",""+dataSnapshot)
-            var user = User()
+            val user = User()
             user.databaseId = dataSnapshot.key
             user.name = dataSnapshot.child("name").value as String
             user.avatar = dataSnapshot.child("avatar").value as String?

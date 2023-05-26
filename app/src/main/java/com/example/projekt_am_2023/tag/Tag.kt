@@ -11,11 +11,10 @@ data class Tag(
     var databaseId: String?=null
 ) : Serializable{
     fun saveDatabase(){
-        var key : String?
-        if(this.databaseId == null){
-            key = DatabaseLoader.sections.push().key
+        val key : String? = if(this.databaseId == null){
+            DatabaseLoader.sections.push().key
         }else{
-            key = this.databaseId
+            this.databaseId
         }
 
         if (key == null) {
@@ -39,7 +38,7 @@ data class Tag(
 
     companion object{
         fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Tag> {
-            var tags = mutableListOf<Tag>()
+            val tags = mutableListOf<Tag>()
             for (d in dataSnapshot.children){
                 tags.add(loadDatabase(d))
             }
@@ -47,7 +46,7 @@ data class Tag(
         }
 
         fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, Tag> {
-            var elements = HashMap<String, Tag>()
+            val elements = HashMap<String, Tag>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -55,9 +54,9 @@ data class Tag(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : Tag {
+        private fun loadDatabase(dataSnapshot: DataSnapshot) : Tag {
 //            Log.i("Firebase",""+dataSnapshot)
-            var tag = Tag()
+            val tag = Tag()
             tag.databaseId = dataSnapshot.key
             tag.name = dataSnapshot.child("name").value as String
             tag.color = (dataSnapshot.child("color").value as Long).toInt()

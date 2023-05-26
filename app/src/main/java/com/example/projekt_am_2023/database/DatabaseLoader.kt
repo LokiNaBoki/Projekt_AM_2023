@@ -25,17 +25,17 @@ class DatabaseLoader {
         val dataref = database.reference
 
 
-        val storage = run{
+        private val storage = run{
             val storage = Firebase.storage("gs://tasks-b3e1f.appspot.com/")
             storage
         }
         val storref = storage.reference
         
         fun loadDatabase(dataSnapshot: DataSnapshot) : MutableList<Section> {
-            var tagsMap = Tag.loadDatabaseMap(dataSnapshot.child("tags"))
-            var usersMap = User.loadDatabaseMap(dataSnapshot.child("users"))
-            var sectionsMap = Section.loadDatabaseMap(dataSnapshot.child("sections"))
-            var tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"),tagsMap,usersMap,sectionsMap)
+            val tagsMap = Tag.loadDatabaseMap(dataSnapshot.child("tags"))
+            val usersMap = User.loadDatabaseMap(dataSnapshot.child("users"))
+            val sectionsMap = Section.loadDatabaseMap(dataSnapshot.child("sections"))
+            val tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"),tagsMap,usersMap,sectionsMap)
 
             Task.assignSubtasks(tasksMap)
             Section.assignTasks(tasksMap)
@@ -44,7 +44,7 @@ class DatabaseLoader {
         }
 
         fun loadImage(name:String, context:Context, imageView:ImageView){
-            var reference = storref.child(name)
+            val reference = storref.child(name)
             GlideApp.with(context).load(reference).into(imageView)
         }
     }
