@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.projekt_am_2023.R
 
-class EditSection : AppCompatActivity() {
+class EditSection: AppCompatActivity() {
     private lateinit var fragment: SectionView
     private lateinit var section: Section
 

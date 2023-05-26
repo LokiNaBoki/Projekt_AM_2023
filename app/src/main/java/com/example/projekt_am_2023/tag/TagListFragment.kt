@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class TagListFragment : Fragment() {
+class TagListFragment: Fragment() {
     private var tags: MutableList<Tag> = mutableListOf()
     private lateinit var tagAdapter: TagAdapter
     private lateinit var listener: TagListListener
@@ -31,7 +31,7 @@ class TagListFragment : Fragment() {
             parentFragment as TagListListener
         }
 
-        DatabaseLoader.tags.addValueEventListener(object : ValueEventListener {
+        DatabaseLoader.tags.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 tags = Tag.loadDatabaseArray(dataSnapshot)
                 tagAdapter.notifyDataSetChanged()
@@ -44,7 +44,8 @@ class TagListFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tag_list, container, false)
@@ -65,8 +66,8 @@ class TagListFragment : Fragment() {
         }
     }
 
-    inner class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class TagAdapter: RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
             init {
                 view.setOnClickListener(this)
             }
@@ -95,8 +96,7 @@ class TagListFragment : Fragment() {
         override fun getItemCount() = tags.size
     }
 
-    interface TagListListener : Serializable {
+    interface TagListListener: Serializable {
         fun onTagSelected(tag: Tag)
     }
-
 }

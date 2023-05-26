@@ -10,16 +10,15 @@ data class Section(
     var name: String = "",
     var tasks: MutableList<Task> = mutableListOf(), //is not saved to the database
     var databaseId: String? = null
-    ) : Serializable {
-
-    fun saveDatabase(){
-        val key : String? = if(this.databaseId == null){
+): Serializable {
+    fun saveDatabase() {
+        val key: String? = if(this.databaseId == null) {
             DatabaseLoader.sections.push().key
-        }else{
+        } else {
             this.databaseId
         }
 
-        if (key == null) {
+        if(key == null) {
             Log.w("Firebase", "Couldn't get push key for posts")
             return
         }
@@ -35,34 +34,33 @@ data class Section(
         DatabaseLoader.dataref.updateChildren(childUpdates)
     }
 
-    companion object{
-        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Section> {
+    companion object {
+        fun loadDatabaseArray(dataSnapshot: DataSnapshot): MutableList<Section> {
             val sections = mutableListOf<Section>()
-            for (d in dataSnapshot.children){
+            for(d in dataSnapshot.children) {
                 sections.add(loadDatabase(d))
             }
             return sections
         }
 
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot) : HashMap<String, Section> {
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, Section> {
             val elements = HashMap<String, Section>()
-            for (d in dataSnapshot.children){
+            for(d in dataSnapshot.children) {
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
             }
             return elements
         }
 
-        private fun loadDatabase(dataSnapshot: DataSnapshot) : Section {
-//            Log.i("Firebase",""+dataSnapshot)
-            val section =  Section()
+        private fun loadDatabase(dataSnapshot: DataSnapshot): Section {
+            val section = Section()
             section.databaseId = dataSnapshot.key
             section.name = dataSnapshot.child("name").value as String
             return section
         }
 
         fun assignTasks(tasksMap: HashMap<String, Task>) {
-            for(t in tasksMap.values){
+            for(t in tasksMap.values) {
                 t.section?.tasks?.add(t)
             }
         }

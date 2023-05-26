@@ -8,7 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projekt_am_2023.R
 
-class AddTag : AppCompatActivity() {
+class AddTag: AppCompatActivity() {
     private lateinit var fragment: TagView
     private val tag: Tag = Tag("", Color.BLACK)
 

@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projekt_am_2023.R
 
-class AddTask : AppCompatActivity() {
+class AddTask: AppCompatActivity() {
     private lateinit var fragment: TaskView
-    private val task: Task = Task.emptyTask()
+    private val task: Task = Task()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

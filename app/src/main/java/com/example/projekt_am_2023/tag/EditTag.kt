@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.projekt_am_2023.R
 
-class EditTag : AppCompatActivity() {
+class EditTag: AppCompatActivity() {
     private lateinit var fragment: TagView
     private lateinit var tag: Tag
 
@@ -16,7 +16,7 @@ class EditTag : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_tag)
 
-        tag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        tag = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("tag", Tag::class.java)!!
         } else {
             intent.getSerializableExtra("tag") as Tag

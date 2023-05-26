@@ -6,40 +6,39 @@ import com.google.firebase.database.DataSnapshot
 import java.io.Serializable
 
 data class Tag(
-    var name: String="",
-    var color: Int=0,
-    var databaseId: String?=null
-) : Serializable{
-    fun saveDatabase(){
-        val key : String? = if(this.databaseId == null){
+    var name: String = "",
+    var color: Int = 0,
+    var databaseId: String? = null
+): Serializable {
+    fun saveDatabase() {
+        val key: String? = if(this.databaseId == null) {
             DatabaseLoader.sections.push().key
-        }else{
+        } else {
             this.databaseId
         }
 
-        if (key == null) {
+        if(key == null) {
             Log.w("Firebase", "Couldn't get push key for posts")
             return
         }
 
-
         val postValues = hashMapOf<String, Any>(
             "name" to this.name,
             "color" to this.color,
-
-            )
+        )
 
         val childUpdates = hashMapOf<String, Any>(
             "/tags/$key" to postValues
         )
+
         this.databaseId = key
         DatabaseLoader.dataref.updateChildren(childUpdates)
     }
 
-    companion object{
-        fun loadDatabaseArray(dataSnapshot: DataSnapshot) : MutableList<Tag> {
+    companion object {
+        fun loadDatabaseArray(dataSnapshot: DataSnapshot): MutableList<Tag> {
             val tags = mutableListOf<Tag>()
-            for (d in dataSnapshot.children){
+            for(d in dataSnapshot.children) {
                 tags.add(loadDatabase(d))
             }
             return tags
@@ -47,22 +46,19 @@ data class Tag(
 
         fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, Tag> {
             val elements = HashMap<String, Tag>()
-            for (d in dataSnapshot.children){
+            for(d in dataSnapshot.children) {
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
             }
             return elements
         }
 
-        private fun loadDatabase(dataSnapshot: DataSnapshot) : Tag {
-//            Log.i("Firebase",""+dataSnapshot)
+        private fun loadDatabase(dataSnapshot: DataSnapshot): Tag {
             val tag = Tag()
             tag.databaseId = dataSnapshot.key
             tag.name = dataSnapshot.child("name").value as String
             tag.color = (dataSnapshot.child("color").value as Long).toInt()
             return tag
         }
-
-
     }
 }

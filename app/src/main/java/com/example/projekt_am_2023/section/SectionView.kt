@@ -13,7 +13,7 @@ import com.example.projekt_am_2023.R
 
 private const val ARG_SECTION = "section"
 
-class SectionView : Fragment() {
+class SectionView: Fragment() {
     private lateinit var section: Section
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class SectionView : Fragment() {
 
         view.findViewById<EditText>(R.id.nameText).apply {
             setText(this@SectionView.section.name)
-            addTextChangedListener(object : TextWatcher {
+            addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
@@ -53,9 +53,9 @@ class SectionView : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(section: Section) = SectionView().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_SECTION, section)
-                }
+            arguments = Bundle().apply {
+                putSerializable(ARG_SECTION, section)
             }
+        }
     }
 }

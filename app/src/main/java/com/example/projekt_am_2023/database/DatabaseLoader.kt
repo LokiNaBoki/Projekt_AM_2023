@@ -12,30 +12,27 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class DatabaseLoader {
-    companion object{
-        val database = run{
-            val database = FirebaseDatabase.getInstance("https://tasks-b3e1f-default-rtdb.europe-west1.firebasedatabase.app")
-            database.setPersistenceEnabled(true)
-            database
+    companion object {
+        val database = FirebaseDatabase.getInstance(
+            "https://tasks-b3e1f-default-rtdb.europe-west1.firebasedatabase.app"
+        ).apply {
+            setPersistenceEnabled(true)
         }
+
         val sections = database.getReference("sections")
         val tasks = database.getReference("tasks")
         val users = database.getReference("users")
         val tags = database.getReference("tags")
         val dataref = database.reference
 
-
-        private val storage = run{
-            val storage = Firebase.storage("gs://tasks-b3e1f.appspot.com/")
-            storage
-        }
+        private val storage = Firebase.storage("gs://tasks-b3e1f.appspot.com/")
         val storref = storage.reference
         
-        fun loadDatabase(dataSnapshot: DataSnapshot) : MutableList<Section> {
+        fun loadDatabase(dataSnapshot: DataSnapshot): MutableList<Section> {
             val tagsMap = Tag.loadDatabaseMap(dataSnapshot.child("tags"))
             val usersMap = User.loadDatabaseMap(dataSnapshot.child("users"))
             val sectionsMap = Section.loadDatabaseMap(dataSnapshot.child("sections"))
-            val tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"),tagsMap,usersMap,sectionsMap)
+            val tasksMap = Task.loadDatabaseMap(dataSnapshot.child("tasks"), tagsMap, usersMap, sectionsMap)
 
             Task.assignSubtasks(tasksMap)
             Section.assignTasks(tasksMap)
@@ -43,7 +40,7 @@ class DatabaseLoader {
             return sectionsMap.values.toMutableList()
         }
 
-        fun loadImage(name:String, context:Context, imageView:ImageView){
+        fun loadImage(name:String, context:Context, imageView:ImageView) {
             val reference = storref.child(name)
             GlideApp.with(context).load(reference).into(imageView)
         }

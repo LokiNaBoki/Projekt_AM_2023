@@ -13,7 +13,7 @@ import androidx.core.graphics.red
 import com.example.projekt_am_2023.R
 import kotlin.math.pow
 
-class TagComponent : LinearLayout {
+class TagComponent: LinearLayout {
     private lateinit var text: TextView
     private var foreground: Int = Color.WHITE
     private var _background: Int = Color.BLACK
@@ -33,13 +33,11 @@ class TagComponent : LinearLayout {
             invalidateName()
         }
 
-    constructor(context: Context)
-            : super(context) {
+    constructor(context: Context): super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet)
-            : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
         init()
     }
 
@@ -70,7 +68,6 @@ class TagComponent : LinearLayout {
     private fun invalidateColors() {
         text.apply {
             setTextColor(this@TagComponent.foreground)
-            //setBackgroundColor(this@TagComponent.background)
             backgroundTintList = ColorStateList.valueOf(this@TagComponent.background)
         }
     }

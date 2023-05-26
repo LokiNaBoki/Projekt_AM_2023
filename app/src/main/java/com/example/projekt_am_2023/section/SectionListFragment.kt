@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class SectionListFragment : Fragment() {
+class SectionListFragment: Fragment() {
     private var sections: MutableList<Section> = mutableListOf()
     private lateinit var listener: SectionListListener
     private lateinit var sectionAdapter: SectionAdapter
@@ -31,7 +31,7 @@ class SectionListFragment : Fragment() {
             parentFragment as SectionListListener
         }
 
-        DatabaseLoader.sections.addValueEventListener(object : ValueEventListener {
+        DatabaseLoader.sections.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 sections = Section.loadDatabaseArray(dataSnapshot)
                 sectionAdapter.notifyDataSetChanged()
@@ -44,7 +44,8 @@ class SectionListFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_section_list, container, false)
@@ -65,13 +66,14 @@ class SectionListFragment : Fragment() {
         }
     }
 
-    interface SectionListListener : Serializable {
+    interface SectionListListener: Serializable {
         fun onSectionSelected(section: Section)
     }
 
-    inner class SectionAdapter : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class SectionAdapter: RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
             val text: TextView
+
             init {
                 text = view as TextView
                 text.setOnClickListener(this)

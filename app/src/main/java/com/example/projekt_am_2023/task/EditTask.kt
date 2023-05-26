@@ -2,13 +2,14 @@ package com.example.projekt_am_2023.task
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.projekt_am_2023.R
 
-class EditTask : AppCompatActivity() {
+class EditTask: AppCompatActivity() {
     private lateinit var task: Task
     private lateinit var fragment: TaskView
 
@@ -16,7 +17,12 @@ class EditTask : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_task)
 
-        task = intent.extras!!.getSerializable("task") as Task
+        task = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.extras!!.getSerializable("task", Task::class.java)!!
+        } else {
+            intent.extras!!.getSerializable("task") as Task
+        }
+
         fragment = TaskView.newInstance(task)
         supportFragmentManager.beginTransaction().replace(R.id.editTaskFragment, fragment).commit()
     }

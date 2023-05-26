@@ -18,7 +18,7 @@ import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager
 
 private const val ARG_TAG = "tag"
 
-class TagView : Fragment() {
+class TagView: Fragment() {
     private lateinit var tagPreview: TagComponent
     private lateinit var tag: Tag
 
@@ -47,7 +47,7 @@ class TagView : Fragment() {
 
         view.findViewById<EditText>(R.id.nameText).apply {
             setText(this@TagView.tag.name)
-            addTextChangedListener(object : TextWatcher {
+            addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 

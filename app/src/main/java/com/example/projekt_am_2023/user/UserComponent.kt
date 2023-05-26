@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.projekt_am_2023.R
 
-class UserComponent : LinearLayout {
+class UserComponent: LinearLayout {
     private lateinit var avatar: ImageView
     private lateinit var name: TextView
     private var _user: User? = null
@@ -19,13 +19,11 @@ class UserComponent : LinearLayout {
             updateUser()
         }
 
-    constructor(context: Context)
-            : super(context) {
+    constructor(context: Context): super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet)
-            : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
         init()
     }
 

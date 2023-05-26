@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.projekt_am_2023.R
 
-class AddSection : AppCompatActivity() {
+class AddSection: AppCompatActivity() {
     private lateinit var fragment: SectionView
     private val section: Section = Section()
 

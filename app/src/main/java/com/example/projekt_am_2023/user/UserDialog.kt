@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class UserDialog : DialogFragment() {
+class UserDialog: DialogFragment() {
     private var assignees: MutableList<User> = mutableListOf()
     private lateinit var listener: AssigneeDialogListener
     private lateinit var assigneeAdapter: AssigneeAdapter
@@ -34,7 +34,7 @@ class UserDialog : DialogFragment() {
             parentFragment as AssigneeDialogListener
         }
 
-        DatabaseLoader.users.addValueEventListener(object : ValueEventListener {
+        DatabaseLoader.users.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 assignees = User.loadDatabaseArray(dataSnapshot)
                 assigneeAdapter.notifyDataSetChanged()
@@ -47,7 +47,8 @@ class UserDialog : DialogFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.dialog_user, container, false)
@@ -64,7 +65,10 @@ class UserDialog : DialogFragment() {
     }
 
     override fun onResume() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val widthPart = 0.8f
+        val heightPart = 0.6f
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = requireActivity().windowManager.currentWindowMetrics
             val insets: Insets = windowMetrics.windowInsets
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
@@ -73,7 +77,10 @@ class UserDialog : DialogFragment() {
             val height = windowMetrics.bounds.height() - insets.top - insets.bottom
 
             dialog!!.window?.apply {
-                setLayout( (width * 0.8).toInt(), (height * 0.6).toInt() )
+                setLayout(
+                    (width * widthPart).toInt(),
+                    (height * heightPart).toInt()
+                )
                 setGravity(Gravity.CENTER)
             }
         } else {
@@ -82,8 +89,8 @@ class UserDialog : DialogFragment() {
             dialog!!.window.apply {
                 this!!.windowManager.defaultDisplay.getSize(size)
                 setLayout(
-                    (size.x * 0.8).toInt(),
-                    (size.y * 0.6).toInt(),
+                    (size.x * widthPart).toInt(),
+                    (size.y * heightPart).toInt(),
                 )
                 setGravity(Gravity.CENTER)
             }
@@ -99,13 +106,14 @@ class UserDialog : DialogFragment() {
         }
     }
 
-    interface AssigneeDialogListener : Serializable {
+    interface AssigneeDialogListener: Serializable {
         fun onFinishAssigneeDialog(assignee: User)
     }
 
-    inner class AssigneeAdapter : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class AssigneeAdapter: RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
             val view: UserComponent
+
             init {
                 this.view = view as UserComponent
                 this.view.setOnClickListener(this)

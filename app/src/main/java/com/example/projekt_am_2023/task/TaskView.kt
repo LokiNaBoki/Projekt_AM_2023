@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,10 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -36,31 +35,35 @@ import java.util.Calendar
 
 private const val ARG_TASK = "task"
 
-class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
-    TagDialog.TagDialogListener, SectionDialog.SectionDialogListener {
+class TaskView: Fragment(), UserDialog.AssigneeDialogListener,
+                TagDialog.TagDialogListener, SectionDialog.SectionDialogListener {
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
     private lateinit var tagsAdapter: TagAdapter
 
     private fun onTimeClick(time: Calendar, callback: () -> Unit) {
-        val timePickerDialog = TimePickerDialog(requireContext(),
-            { _: TimePicker, hour: Int, minute: Int ->
+        val timePickerDialog = TimePickerDialog(requireContext(), { _, hour, minute ->
                 time.set(Calendar.HOUR_OF_DAY, hour)
                 time.set(Calendar.MINUTE, minute)
                 callback()
-            }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true
+            },
+            time.get(Calendar.HOUR_OF_DAY),
+            time.get(Calendar.MINUTE),
+            true
         )
         timePickerDialog.show()
     }
 
     private fun onDateClick(date: Calendar, callback: () -> Unit) {
-        val datePickerDialog = DatePickerDialog(requireContext(),
-            { _: DatePicker, year: Int, month: Int, day: Int ->
+        val datePickerDialog = DatePickerDialog(requireContext(), { _, year, month, day ->
                 date.set(Calendar.YEAR, year)
                 date.set(Calendar.MONTH, month)
                 date.set(Calendar.DAY_OF_MONTH, day)
                 callback()
-            }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)
+            },
+            date.get(Calendar.YEAR),
+            date.get(Calendar.MONTH),
+            date.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.show()
     }
@@ -68,10 +71,12 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        task = if (arguments != null) {
-            requireArguments().getSerializable(ARG_TASK) as Task
+        task = if(arguments == null) {
+            Task()
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getSerializable(ARG_TASK, Task::class.java)!!
         } else {
-            Task.emptyTask()
+            requireArguments().getSerializable(ARG_TASK) as Task
         }
     }
 
@@ -89,7 +94,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
 
         view.findViewById<TextView>(R.id.taskTitle).apply {
             text = task.title
-            addTextChangedListener(object : TextWatcher {
+            addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
@@ -159,7 +164,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
 
         view.findViewById<EditText>(R.id.descriptionText).apply{
             setText(task.Description)
-            addTextChangedListener(object : TextWatcher {
+            addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
@@ -187,13 +192,13 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
     companion object {
         @JvmStatic
         fun newInstance(task: Task) = TaskView().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_TASK, task)
-                }
+            arguments = Bundle().apply {
+                putSerializable(ARG_TASK, task)
             }
+        }
     }
 
-    inner class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+    inner class TagAdapter: RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDTAG = 1
 
@@ -201,7 +206,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
             return if (position == task.tags.size) { ADDTAG } else { REGULAR }
         }
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
             val text: TextView?
 
             init {
@@ -218,14 +223,14 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
                 }
             }
 
-            inner class TagClick : View.OnClickListener {
+            inner class TagClick: View.OnClickListener {
                 override fun onClick(view: View?) {
                     task.tags.removeAt(adapterPosition)
                     notifyItemRemoved(adapterPosition)
                 }
             }
 
-            inner class NewClick : View.OnClickListener {
+            inner class NewClick: View.OnClickListener {
                 override fun onClick(view: View?) {
                     TagDialog.newInstance().show(childFragmentManager, null)
                 }
@@ -246,7 +251,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            when (viewHolder.itemViewType) {
+            when(viewHolder.itemViewType) {
                 ADDTAG -> {
                     viewHolder.text!!.apply {
                         text = getString(R.string.addTag)
@@ -292,7 +297,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
         }
     }
 
-    inner class SubtaskAdapter : RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
+    inner class SubtaskAdapter: RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDSUBTASK = 1
 
@@ -300,7 +305,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
             return if (position == task.subtasks.size) { ADDSUBTASK } else { REGULAR }
         }
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
             val name: TextView
             val checkbox: CheckBox?
 
@@ -319,7 +324,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
                 }
             }
 
-            inner class SubtaskClick : View.OnClickListener, View.OnLongClickListener {
+            inner class SubtaskClick: View.OnClickListener, View.OnLongClickListener {
                 override fun onClick(view: View?) {
                     val i = Intent(context, EditTask::class.java)
                     i.putExtra("task", task.subtasks[adapterPosition])
@@ -333,7 +338,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
                 }
             }
 
-            inner class NewClick : View.OnClickListener {
+            inner class NewClick: View.OnClickListener {
                 override fun onClick(view: View?) {
                     val i = Intent(context, AddTask::class.java)
                     addResult.launch(i)
@@ -358,7 +363,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            when (viewHolder.itemViewType) {
+            when(viewHolder.itemViewType) {
                 ADDSUBTASK -> {
                     viewHolder.name.apply {
                         text = getString(R.string.addSubtask)

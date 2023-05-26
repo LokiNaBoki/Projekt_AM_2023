@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.projekt_am_2023.R
 import java.io.Serializable
 
-class TagDialog : DialogFragment(), TagListFragment.TagListListener {
+class TagDialog: DialogFragment(), TagListFragment.TagListListener {
     private lateinit var listener: TagDialogListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,8 @@ class TagDialog : DialogFragment(), TagListFragment.TagListListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.dialog_tag, container, false)
@@ -41,7 +42,10 @@ class TagDialog : DialogFragment(), TagListFragment.TagListListener {
     }
 
     override fun onResume() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val widthPart = 0.8f
+        val heightPart = 0.8f
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = requireActivity().windowManager.currentWindowMetrics
             val insets: Insets = windowMetrics.windowInsets
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
@@ -50,7 +54,10 @@ class TagDialog : DialogFragment(), TagListFragment.TagListListener {
             val height = windowMetrics.bounds.height() - insets.top - insets.bottom
 
             dialog!!.window?.apply {
-                setLayout( (width * 0.8).toInt(), (height * 0.6).toInt() )
+                setLayout(
+                    (width * widthPart).toInt(),
+                    (height * heightPart).toInt()
+                )
                 setGravity(Gravity.CENTER)
             }
         } else {
@@ -59,8 +66,8 @@ class TagDialog : DialogFragment(), TagListFragment.TagListListener {
             dialog!!.window.apply {
                 this!!.windowManager.defaultDisplay.getSize(size)
                 setLayout(
-                    (size.x * 0.8).toInt(),
-                    (size.y * 0.6).toInt(),
+                    (size.x * widthPart).toInt(),
+                    (size.y * heightPart).toInt(),
                 )
                 setGravity(Gravity.CENTER)
             }
@@ -76,7 +83,7 @@ class TagDialog : DialogFragment(), TagListFragment.TagListListener {
         }
     }
 
-    interface TagDialogListener : Serializable {
+    interface TagDialogListener: Serializable {
         fun onFinishTagDialog(tag: Tag)
     }
 
