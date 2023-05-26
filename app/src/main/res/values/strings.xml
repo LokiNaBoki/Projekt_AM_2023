@@ -24,7 +24,6 @@
     <string name="subtasksLabel">Subtasks</string>
     <string name="tagsLabel">Tags</string>
     <string name="userImageDescription">User avatar</string>
-    <string name="descriptionDescription">Description of a task</string>
     <string name="addTag">New Tag</string>
     <string name="addSubtask">New subtask</string>
     <string name="userListTitle">Select assignee</string>
@@ -37,5 +36,12 @@
     <string name="listLabel">List</string>
     <string name="monthLabel">Month</string>
     <string name="sectionsLabel">Sections</string>
-    <string name="noneLabel">?</string>
+    <string name="noneLabel">None</string>
+    <string name="fab_description">Add element</string>
+    <string name="fold_section">Fold section</string>
+    <string name="assignee_avatar">Assignee avatar</string>
+    <plurals name="section_task_count">
+        <item quantity="one">(%d task)</item>
+        <item quantity="other">(%d tasks)</item>
+    </plurals>
 </resources>

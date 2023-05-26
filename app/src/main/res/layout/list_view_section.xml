@@ -37,7 +37,8 @@
         android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unfolded_triangle" />
+        app:srcCompat="@drawable/unfolded_triangle"
+        android:contentDescription="@string/fold_section" />
 
     <TextView
         android:id="@+id/tasksNum"

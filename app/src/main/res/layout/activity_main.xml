@@ -46,5 +46,6 @@
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/new_icon"
-        app:tint="?android:attr/colorBackground" />
+        app:tint="?android:attr/colorBackground"
+        android:contentDescription="@string/fab_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>

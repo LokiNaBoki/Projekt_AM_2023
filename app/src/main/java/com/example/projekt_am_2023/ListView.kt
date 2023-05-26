@@ -49,7 +49,7 @@ class ListView : Fragment() {
         override fun onClick(view: View?) {
             if (viewHolder.tasksRecycler.visibility == View.VISIBLE) {
                 viewHolder.tasksRecycler.visibility = View.GONE
-                viewHolder.tasksNum.text = "(${size} tasks)"
+                viewHolder.tasksNum.text = resources.getQuantityString(R.plurals.section_task_count, size, size)
                 viewHolder.hideButton.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.folded_triangle))
             }
             else {
