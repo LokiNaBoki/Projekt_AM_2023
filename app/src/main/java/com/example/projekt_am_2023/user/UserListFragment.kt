@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.user
 
 import android.graphics.Insets
 import android.graphics.Point
@@ -11,37 +11,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Button
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.projekt_am_2023.database.DatabaseLoader
+import com.example.projekt_am_2023.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class TagListFragment : DialogFragment() {
-    private var tags: MutableList<Tag> = mutableListOf()
-    private lateinit var listener: TagDialogListener
-    private lateinit var tagAdapter: TagAdapter
+class UserListFragment : DialogFragment() {
+    private var assignees: MutableList<User> = mutableListOf()
+    private lateinit var listener: AssigneeDialogListener
+    private lateinit var assigneeAdapter: AssigneeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         listener = if(parentFragment == null) {
-            requireContext() as TagDialogListener
+            requireContext() as AssigneeDialogListener
         } else {
-            parentFragment as TagDialogListener
+            parentFragment as AssigneeDialogListener
         }
 
-        DatabaseLoader.tags.addValueEventListener(object : ValueEventListener {
+        DatabaseLoader.users.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                tags = Tag.loadDatabaseArray(dataSnapshot)
-                tagAdapter.notifyDataSetChanged()
+                assignees = User.loadDatabaseArray(dataSnapshot)
+                assigneeAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Firebase", "tags - loadPost:onCancelled", databaseError.toException())
+                Log.w("Firebase", "users - loadPost:onCancelled", databaseError.toException())
             }
         })
     }
@@ -50,12 +50,12 @@ class TagListFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tag_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_user_list, container, false)
 
-        tagAdapter = TagAdapter()
-        view.findViewById<RecyclerView>(R.id.tagRecycler).apply {
+        assigneeAdapter = AssigneeAdapter()
+        view.findViewById<RecyclerView>(R.id.assigneeRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = tagAdapter
+            adapter = assigneeAdapter
         }
 
         view.findViewById<Button>(R.id.cancel).setOnClickListener { dismiss() }
@@ -94,43 +94,37 @@ class TagListFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = TagListFragment().apply {
+        fun newInstance() = UserListFragment().apply {
             arguments = Bundle().apply { }
         }
     }
 
-    interface TagDialogListener : Serializable {
-        fun onFinishTagDialog(tag: Tag)
+    interface AssigneeDialogListener : Serializable {
+        fun onFinishAssigneeDialog(assignee: User)
     }
 
-    inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+    inner class AssigneeAdapter() : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+            val view: UserComponent
             init {
-                view.setOnClickListener(this)
+                this.view = view as UserComponent
+                this.view.setOnClickListener(this)
             }
 
             override fun onClick(view: View?) {
-                listener.onFinishTagDialog(tags[adapterPosition]);
+                listener?.onFinishAssigneeDialog(assignees[adapterPosition]);
                 dismiss();
             }
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(TagComponent(viewGroup.context))
+            return ViewHolder(UserComponent(requireContext()))
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            (viewHolder.itemView as TagComponent).apply{
-                layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
-                    updateMargins(bottom = (10 * resources.displayMetrics.density).toInt())
-                    updateLayoutParams<ViewGroup.LayoutParams> {
-                        width = ViewGroup.LayoutParams.MATCH_PARENT
-                    }
-                }
-                setTag(tags[position])
-            }
+                viewHolder.view.user = assignees[position]
         }
 
-        override fun getItemCount() = tags.size
+        override fun getItemCount() = assignees.size
     }
 }

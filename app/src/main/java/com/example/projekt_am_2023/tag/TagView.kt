@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.tag
 
 import android.graphics.Color
 import android.os.Build
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.example.projekt_am_2023.R
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager

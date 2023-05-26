@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TagView">
+    tools:context=".tag.TagView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -99,7 +99,7 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <com.example.projekt_am_2023.TagComponent
+                <com.example.projekt_am_2023.tag.TagComponent
                     android:id="@+id/previewDisplay"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.user
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.projekt_am_2023.R
 
 class UserComponent : LinearLayout {
     private lateinit var avatar: ImageView

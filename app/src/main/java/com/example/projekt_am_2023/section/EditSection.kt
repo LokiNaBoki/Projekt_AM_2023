@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.section
 
 import android.app.Activity
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.projekt_am_2023.R
 
 class EditSection : AppCompatActivity() {
     private lateinit var fragment: SectionView

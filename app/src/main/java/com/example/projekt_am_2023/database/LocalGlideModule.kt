@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.database
 
 import android.content.Context
 import com.bumptech.glide.Glide

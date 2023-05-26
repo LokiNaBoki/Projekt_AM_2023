@@ -1,6 +1,7 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.tag
 
 import android.util.Log
+import com.example.projekt_am_2023.database.DatabaseLoader
 import com.google.firebase.database.DataSnapshot
 import java.io.Serializable
 
@@ -45,8 +46,8 @@ data class Tag(
             return tags
         }
 
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String,Tag> {
-            var elements = HashMap<String,Tag>()
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, Tag> {
+            var elements = HashMap<String, Tag>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -54,7 +55,7 @@ data class Tag(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : Tag{
+        fun loadDatabase(dataSnapshot: DataSnapshot) : Tag {
 //            Log.i("Firebase",""+dataSnapshot)
             var tag : Tag = Tag()
             tag.databaseId = dataSnapshot.key

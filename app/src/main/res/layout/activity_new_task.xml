@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTask">
+    tools:context=".task.AddTask">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/editTaskFragment"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:name="com.example.projekt_am_2023.TaskView" />
+        android:name="com.example.projekt_am_2023.task.TaskView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TaskView">
+    tools:context=".task.TaskView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                         android:textSize="22sp" />
                 </LinearLayout>
 
-                <com.example.projekt_am_2023.UserComponent
+                <com.example.projekt_am_2023.user.UserComponent
                     android:id="@+id/assignee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.tag
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -10,8 +10,7 @@ import android.widget.TextView
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
+import com.example.projekt_am_2023.R
 import kotlin.math.pow
 
 class TagComponent : LinearLayout {

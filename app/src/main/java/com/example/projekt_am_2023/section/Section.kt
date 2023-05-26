@@ -1,6 +1,8 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.section
 
 import android.util.Log
+import com.example.projekt_am_2023.database.DatabaseLoader
+import com.example.projekt_am_2023.task.Task
 import com.google.firebase.database.DataSnapshot
 import java.io.Serializable
 
@@ -43,8 +45,8 @@ data class Section(
             return sections
         }
 
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot) : HashMap<String,Section> {
-            var elements = HashMap<String,Section>()
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot) : HashMap<String, Section> {
+            var elements = HashMap<String, Section>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -52,7 +54,7 @@ data class Section(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : Section{
+        fun loadDatabase(dataSnapshot: DataSnapshot) : Section {
 //            Log.i("Firebase",""+dataSnapshot)
             var section : Section =  Section()
             section.databaseId = dataSnapshot.key

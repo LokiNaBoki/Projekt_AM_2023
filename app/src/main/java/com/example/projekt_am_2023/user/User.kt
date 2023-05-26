@@ -1,9 +1,10 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.user
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
+import com.example.projekt_am_2023.database.DatabaseLoader
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.storage.UploadTask
 import java.io.Serializable
@@ -44,7 +45,7 @@ data class User(
 
     fun loadAvatar(context: Context, imageView:ImageView){
         if(avatar!=null){
-            DatabaseLoader.loadImage("avatars/"+avatar!!, context, imageView)
+            DatabaseLoader.loadImage("avatars/" + avatar!!, context, imageView)
         }else{
             Log.w("Data","User doesn't have avatar.")
         }
@@ -73,8 +74,8 @@ data class User(
             }
             return users
         }
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String,User> {
-            var elements = HashMap<String,User>()
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot): HashMap<String, User> {
+            var elements = HashMap<String, User>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d)
                 elements[element.databaseId!!] = element
@@ -82,7 +83,7 @@ data class User(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot) : User{
+        fun loadDatabase(dataSnapshot: DataSnapshot) : User {
 //            Log.i("Firebase",""+dataSnapshot)
             var user : User =  User()
             user.databaseId = dataSnapshot.key

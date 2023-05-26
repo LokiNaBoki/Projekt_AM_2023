@@ -1,8 +1,11 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.database
 
 import android.content.Context
 import android.widget.ImageView
-import com.bumptech.glide.Glide
+import com.example.projekt_am_2023.section.Section
+import com.example.projekt_am_2023.tag.Tag
+import com.example.projekt_am_2023.task.Task
+import com.example.projekt_am_2023.user.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase

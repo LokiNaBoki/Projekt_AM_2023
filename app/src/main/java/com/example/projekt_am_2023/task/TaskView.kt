@@ -1,4 +1,4 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.task
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -23,12 +23,21 @@ import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.projekt_am_2023.R
+import com.example.projekt_am_2023.section.Section
+import com.example.projekt_am_2023.section.SectionListFragment
+import com.example.projekt_am_2023.tag.Tag
+import com.example.projekt_am_2023.tag.TagComponent
+import com.example.projekt_am_2023.tag.TagListFragment
+import com.example.projekt_am_2023.user.User
+import com.example.projekt_am_2023.user.UserComponent
+import com.example.projekt_am_2023.user.UserListFragment
 import java.util.Calendar
 
 private const val ARG_TASK = "task"
 
 class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
-                 TagListFragment.TagDialogListener, SectionListFragment.SectionDialogListener {
+    TagListFragment.TagDialogListener, SectionListFragment.SectionDialogListener {
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
     private lateinit var tagsAdapter: TagAdapter

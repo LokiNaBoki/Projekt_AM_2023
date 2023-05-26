@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditTag">
+    tools:context=".tag.EditTag">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/editTagFragment"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:name="com.example.projekt_am_2023.TagView" />
+        android:name="com.example.projekt_am_2023.tag.TagView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

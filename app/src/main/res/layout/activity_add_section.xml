@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddSection">
+    tools:context=".section.AddSection">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/addSectionFragment"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:name="com.example.projekt_am_2023.SectionView" />
+        android:name="com.example.projekt_am_2023.section.SectionView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

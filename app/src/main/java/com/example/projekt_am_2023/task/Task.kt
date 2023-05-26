@@ -1,6 +1,10 @@
-package com.example.projekt_am_2023
+package com.example.projekt_am_2023.task
 
 import android.util.Log
+import com.example.projekt_am_2023.database.DatabaseLoader
+import com.example.projekt_am_2023.section.Section
+import com.example.projekt_am_2023.tag.Tag
+import com.example.projekt_am_2023.user.User
 import com.google.firebase.database.DataSnapshot
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -36,8 +40,8 @@ data class Task(
 //            return tasks
 //        }
 
-        fun loadDatabaseMap(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag>, users:HashMap<String,User>, sections:HashMap<String,Section>): HashMap<String,Task> {
-            var elements = HashMap<String,Task>()
+        fun loadDatabaseMap(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>): HashMap<String, Task> {
+            var elements = HashMap<String, Task>()
             for (d in dataSnapshot.children){
                 val element = loadDatabase(d,tags,users,sections)
                 elements[element.databaseId!!] = element
@@ -45,7 +49,7 @@ data class Task(
             return elements
         }
 
-        fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String,Tag> , users:HashMap<String,User>, sections:HashMap<String,Section>) : Task{
+        fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>) : Task {
 //            Log.i("Firebase",""+dataSnapshot)
             var task : Task = Task()
             task.databaseId = dataSnapshot.key
