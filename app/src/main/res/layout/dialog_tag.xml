@@ -24,15 +24,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tagRecycler"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/tagFragment"
+            android:name="com.example.projekt_am_2023.tag.TagListFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/cancel"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:layout_editor_absoluteX="20dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <Button
             android:id="@+id/cancel"
