@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.projekt_am_2023.section.AddSection
+import com.example.projekt_am_2023.section.EditSection
+import com.example.projekt_am_2023.section.Section
+import com.example.projekt_am_2023.section.SectionListFragment
 import com.example.projekt_am_2023.tag.AddTag
 import com.example.projekt_am_2023.tag.EditTag
 import com.example.projekt_am_2023.tag.Tag
@@ -15,7 +19,8 @@ import com.example.projekt_am_2023.tag.TagListFragment
 import com.example.projekt_am_2023.task.AddTask
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
+class MainActivity : AppCompatActivity(), TagListFragment.TagListListener,
+                     SectionListFragment.SectionListListener {
     private lateinit var viewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,24 +32,29 @@ class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
 
         val listFragment = ListView.newInstance()
         val monthFragment = CalendarMonthView.newInstance()
+        val tagFragment = TagListFragment.newInstance()
+        val sectionFragment = SectionListFragment.newInstance()
 
         viewPager.adapter = CustomStateAdapter(this).apply {
             addFragment(listFragment)
             addFragment(monthFragment)
-            addFragment(TagListFragment.newInstance())
+            addFragment(tagFragment)
+            addFragment(sectionFragment)
         }
 
         TabLayoutMediator(findViewById(R.id.tabLayout), viewPager) { tab, position ->
             tab.setIcon(when(position) {
                 0 -> { R.drawable.list_icon }
                 1 -> { R.drawable.month_icon }
-                2 -> { R.drawable.section_icon }
+                2 -> { R.drawable.tag_icon }
+                3 -> { R.drawable.section_icon }
                 else -> { R.drawable.none_icon }
             })
             tab.text = getString(when(position) {
                 0 -> { R.string.listLabel }
                 1 -> { R.string.monthLabel }
-                2 -> { R.string.sectionsLabel }
+                2 -> { R.string.tagsLabel }
+                3 -> { R.string.sectionsLabel }
                 else -> { R.string.noneLabel }
             })
         }.attach()
@@ -61,6 +71,7 @@ class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
     fun onNewClick(ignoredView: View) {
         when(viewPager.currentItem) {
             2 ->  { startActivity((Intent(this, AddTag::class.java)))}
+            3 ->  { startActivity((Intent(this, AddSection::class.java)))}
             else -> { startActivity(Intent(this, AddTask::class.java)) }
         }
     }
@@ -68,6 +79,12 @@ class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
     override fun onTagSelected(tag: Tag) {
         val i = Intent(this, EditTag::class.java)
         i.putExtra("tag", tag)
+        startActivity(i)
+    }
+
+    override fun onSectionSelected(section: Section) {
+        val i = Intent(this, EditSection::class.java)
+        i.putExtra("section", section)
         startActivity(i)
     }
 }
