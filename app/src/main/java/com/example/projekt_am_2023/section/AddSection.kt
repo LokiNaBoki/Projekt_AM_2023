@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.example.projekt_am_2023.R
 
 class AddSection: AppCompatActivity() {
@@ -21,7 +22,7 @@ class AddSection: AppCompatActivity() {
 
     fun onSave(ignoredView: View) {
         if(section.name.isEmpty()) {
-            setResult(Activity.RESULT_CANCELED)
+            Toast.makeText(this, "Section's name cannot be empty", Toast.LENGTH_SHORT).show()
         } else {
             section.saveDatabase()
             val intent = Intent().apply {

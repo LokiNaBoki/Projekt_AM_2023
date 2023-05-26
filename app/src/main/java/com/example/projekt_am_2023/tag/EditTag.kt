@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.example.projekt_am_2023.R
 
 class EditTag: AppCompatActivity() {
@@ -28,7 +29,7 @@ class EditTag: AppCompatActivity() {
 
     fun onSave(ignoredView: View) {
         if(tag.name.isEmpty()) {
-            setResult(Activity.RESULT_CANCELED)
+            Toast.makeText(this, "Tag's name cannot be empty", Toast.LENGTH_SHORT).show()
         } else {
             tag.saveDatabase()
             val intent = Intent().apply {
