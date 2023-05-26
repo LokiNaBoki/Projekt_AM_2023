@@ -28,7 +28,7 @@ class CalendarMonthView : Fragment() {
         val chooseDateListener = ChooseDateListener()
         view.findViewById<CalendarView>(R.id.calendarView).setOnDateChangeListener(chooseDateListener)
         fragment = ListView.newInstance(Calendar.getInstance())
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.childFragmentContainer, fragment).commit()
+        childFragmentManager.beginTransaction().replace(R.id.childFragmentContainer, fragment).commit()
         return view
     }
 
