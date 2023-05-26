@@ -1,5 +1,6 @@
 package com.example.projekt_am_2023.user
 
+import android.content.res.Configuration
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
@@ -66,7 +67,11 @@ class UserDialog: DialogFragment() {
 
     override fun onResume() {
         val widthPart = 0.8f
-        val heightPart = 0.6f
+        val heightPart = if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            0.9f
+        } else {
+            0.6f
+        }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = requireActivity().windowManager.currentWindowMetrics
