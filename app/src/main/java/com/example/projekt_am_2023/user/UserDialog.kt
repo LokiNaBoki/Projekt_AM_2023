@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class UserListFragment : DialogFragment() {
+class UserDialog : DialogFragment() {
     private var assignees: MutableList<User> = mutableListOf()
     private lateinit var listener: AssigneeDialogListener
     private lateinit var assigneeAdapter: AssigneeAdapter
@@ -50,7 +50,7 @@ class UserListFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_user_list, container, false)
+        val view = inflater.inflate(R.layout.dialog_user, container, false)
 
         assigneeAdapter = AssigneeAdapter()
         view.findViewById<RecyclerView>(R.id.assigneeRecycler).apply {
@@ -94,7 +94,7 @@ class UserListFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = UserListFragment().apply {
+        fun newInstance() = UserDialog().apply {
             arguments = Bundle().apply { }
         }
     }

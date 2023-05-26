@@ -1,6 +1,5 @@
-package com.example.projekt_am_2023.section
+package com.example.projekt_am_2023.tag
 
-import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
@@ -12,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Button
-import android.widget.TextView
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,27 +23,27 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import java.io.Serializable
 
-class SectionListFragment : DialogFragment() {
-    private var sections: MutableList<Section> = mutableListOf()
-    private lateinit var listener: SectionDialogListener
-    private lateinit var sectionAdapter: SectionAdapter
+class TagDialog : DialogFragment() {
+    private var tags: MutableList<Tag> = mutableListOf()
+    private lateinit var listener: TagDialogListener
+    private lateinit var tagAdapter: TagAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         listener = if(parentFragment == null) {
-            requireContext() as SectionDialogListener
+            requireContext() as TagDialogListener
         } else {
-            parentFragment as SectionDialogListener
+            parentFragment as TagDialogListener
         }
 
-        DatabaseLoader.sections.addValueEventListener(object : ValueEventListener {
+        DatabaseLoader.tags.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                sections = Section.loadDatabaseArray(dataSnapshot)
-                sectionAdapter.notifyDataSetChanged()
+                tags = Tag.loadDatabaseArray(dataSnapshot)
+                tagAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("Firebase", "sections - loadPost:onCancelled", databaseError.toException())
+                Log.w("Firebase", "tags - loadPost:onCancelled", databaseError.toException())
             }
         })
     }
@@ -53,12 +52,12 @@ class SectionListFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_section_list, container, false)
+        val view = inflater.inflate(R.layout.dialog_tag, container, false)
 
-        sectionAdapter = SectionAdapter()
-        view.findViewById<RecyclerView>(R.id.sectionRecycler).apply {
+        tagAdapter = TagAdapter()
+        view.findViewById<RecyclerView>(R.id.tagRecycler).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = sectionAdapter
+            adapter = tagAdapter
         }
 
         view.findViewById<Button>(R.id.cancel).setOnClickListener { dismiss() }
@@ -97,46 +96,43 @@ class SectionListFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = SectionListFragment().apply {
+        fun newInstance() = TagDialog().apply {
             arguments = Bundle().apply { }
         }
     }
 
-    interface SectionDialogListener : Serializable {
-        fun onFinishSectionDialog(section: Section)
+    interface TagDialogListener : Serializable {
+        fun onFinishTagDialog(tag: Tag)
     }
 
-    inner class SectionAdapter() : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
+    inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-            val text: TextView
             init {
-                text = view as TextView
-                text.setOnClickListener(this)
+                view.setOnClickListener(this)
             }
 
             override fun onClick(view: View?) {
-                listener.onFinishSectionDialog(sections[adapterPosition]);
+                listener.onFinishTagDialog(tags[adapterPosition]);
                 dismiss();
             }
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(TextView(viewGroup.context).apply {
-                layoutParams = ViewGroup.MarginLayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    updateMargins(bottom = (10 * resources.displayMetrics.density).toInt())
-                }
-                textSize = 22f
-                setTextColor(Color.BLACK)
-            })
+            return ViewHolder(TagComponent(viewGroup.context))
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.text.text = sections[position].name
+            (viewHolder.itemView as TagComponent).apply{
+                layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    updateMargins(bottom = (10 * resources.displayMetrics.density).toInt())
+                    updateLayoutParams<ViewGroup.LayoutParams> {
+                        width = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                }
+                setTag(tags[position])
+            }
         }
 
-        override fun getItemCount() = sections.size
+        override fun getItemCount() = tags.size
     }
 }

@@ -25,19 +25,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_am_2023.R
 import com.example.projekt_am_2023.section.Section
-import com.example.projekt_am_2023.section.SectionListFragment
+import com.example.projekt_am_2023.section.SectionDialog
 import com.example.projekt_am_2023.tag.Tag
 import com.example.projekt_am_2023.tag.TagComponent
-import com.example.projekt_am_2023.tag.TagListFragment
+import com.example.projekt_am_2023.tag.TagDialog
 import com.example.projekt_am_2023.user.User
 import com.example.projekt_am_2023.user.UserComponent
-import com.example.projekt_am_2023.user.UserListFragment
+import com.example.projekt_am_2023.user.UserDialog
 import java.util.Calendar
 
 private const val ARG_TASK = "task"
 
-class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
-    TagListFragment.TagDialogListener, SectionListFragment.SectionDialogListener {
+class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
+    TagDialog.TagDialogListener, SectionDialog.SectionDialogListener {
     private lateinit var task: Task
     private lateinit var subtasksAdapter: SubtaskAdapter
     private lateinit var tagsAdapter: TagAdapter
@@ -102,7 +102,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
         view.findViewById<UserComponent>(R.id.assignee).apply {
             user = task.assignee
             setOnClickListener {
-                UserListFragment.newInstance().show(childFragmentManager, null)
+                UserDialog.newInstance().show(childFragmentManager, null)
             }
 
             setOnLongClickListener {
@@ -115,7 +115,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
         view.findViewById<TextView>(R.id.sectionText).apply {
             text = task.section?.name ?: ""
             setOnClickListener {
-                SectionListFragment.newInstance().show(childFragmentManager, null)
+                SectionDialog.newInstance().show(childFragmentManager, null)
             }
         }
 
@@ -227,7 +227,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
 
             inner class NewClick : View.OnClickListener {
                 override fun onClick(view: View?) {
-                    TagListFragment.newInstance().show(childFragmentManager, null)
+                    TagDialog.newInstance().show(childFragmentManager, null)
                 }
             }
         }
