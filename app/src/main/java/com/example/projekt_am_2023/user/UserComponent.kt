@@ -42,7 +42,10 @@ class UserComponent: LinearLayout {
     }
 
     private fun updateUser() {
-        if(user == null || user!!.avatar == null) {
+        if(user == null) {
+            val drawable = ContextCompat.getDrawable(context, R.drawable.user_none)
+            avatar.setImageDrawable(drawable)
+        } else if(user!!.avatar == null) {
             val drawable = ContextCompat.getDrawable(context, R.drawable.user_default)
             avatar.setImageDrawable(drawable)
         } else {
