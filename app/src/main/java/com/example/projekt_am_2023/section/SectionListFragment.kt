@@ -3,17 +3,16 @@ package com.example.projekt_am_2023.section
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.updateMargins
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projekt_am_2023.R
 import com.example.projekt_am_2023.database.DatabaseLoader
-import com.example.projekt_am_2023.tag.TagListFragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -70,7 +69,7 @@ class SectionListFragment : Fragment() {
         fun onSectionSelected(section: Section)
     }
 
-    inner class SectionAdapter() : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
+    inner class SectionAdapter : RecyclerView.Adapter<SectionAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
             val text: TextView
             init {
@@ -79,7 +78,7 @@ class SectionListFragment : Fragment() {
             }
 
             override fun onClick(view: View?) {
-                listener.onSectionSelected(sections[adapterPosition]);
+                listener.onSectionSelected(sections[adapterPosition])
             }
         }
 

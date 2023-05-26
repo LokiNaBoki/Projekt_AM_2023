@@ -33,13 +33,13 @@ class EditTask : AppCompatActivity() {
                 putExtra("task", task)
             }
 
-            setResult(Activity.RESULT_OK, result);
+            setResult(Activity.RESULT_OK, result)
             finish()
         }
     }
 
     fun onCancel(ignoredView: View) {
-        setResult(Activity.RESULT_CANCELED, null);
+        setResult(Activity.RESULT_CANCELED, null)
         finish()
     }
 }

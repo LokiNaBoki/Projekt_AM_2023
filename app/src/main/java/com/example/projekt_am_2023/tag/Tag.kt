@@ -57,7 +57,7 @@ data class Tag(
 
         fun loadDatabase(dataSnapshot: DataSnapshot) : Tag {
 //            Log.i("Firebase",""+dataSnapshot)
-            var tag : Tag = Tag()
+            var tag = Tag()
             tag.databaseId = dataSnapshot.key
             tag.name = dataSnapshot.child("name").value as String
             tag.color = (dataSnapshot.child("color").value as Long).toInt()

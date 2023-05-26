@@ -193,7 +193,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
             }
     }
 
-    inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+    inner class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDTAG = 1
 
@@ -292,7 +292,7 @@ class TaskView : Fragment(), UserDialog.AssigneeDialogListener,
         }
     }
 
-    inner class SubtaskAdapter() : RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
+    inner class SubtaskAdapter : RecyclerView.Adapter<SubtaskAdapter.ViewHolder>() {
         private val REGULAR = 0
         private val ADDSUBTASK = 1
 

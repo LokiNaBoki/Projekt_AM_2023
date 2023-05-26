@@ -53,7 +53,7 @@ data class User(
 
     fun updateAvatar(file: Uri) : UploadTask {
         val fileStr = file.toString()
-        val name = UUID.randomUUID().toString()+fileStr.substring(fileStr.lastIndexOf("."));
+        val name = UUID.randomUUID().toString()+fileStr.substring(fileStr.lastIndexOf("."))
         val avRef = DatabaseLoader.storref.child("avatars/${name}")
         val uploadTask = avRef.putFile(file)
 
@@ -85,7 +85,7 @@ data class User(
 
         fun loadDatabase(dataSnapshot: DataSnapshot) : User {
 //            Log.i("Firebase",""+dataSnapshot)
-            var user : User =  User()
+            var user = User()
             user.databaseId = dataSnapshot.key
             user.name = dataSnapshot.child("name").value as String
             user.avatar = dataSnapshot.child("avatar").value as String?

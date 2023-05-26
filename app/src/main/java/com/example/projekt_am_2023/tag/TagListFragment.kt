@@ -65,14 +65,14 @@ class TagListFragment : Fragment() {
         }
     }
 
-    inner class TagAdapter() : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
+    inner class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
             init {
                 view.setOnClickListener(this)
             }
 
             override fun onClick(view: View?) {
-                listener.onTagSelected(tags[adapterPosition]);
+                listener.onTagSelected(tags[adapterPosition])
             }
         }
 

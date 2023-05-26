@@ -47,5 +47,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/user1" />
+        tools:srcCompat="@drawable/user_default" />
 </androidx.constraintlayout.widget.ConstraintLayout>

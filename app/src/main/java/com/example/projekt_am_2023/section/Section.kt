@@ -56,7 +56,7 @@ data class Section(
 
         fun loadDatabase(dataSnapshot: DataSnapshot) : Section {
 //            Log.i("Firebase",""+dataSnapshot)
-            var section : Section =  Section()
+            var section =  Section()
             section.databaseId = dataSnapshot.key
             section.name = dataSnapshot.child("name").value as String
             return section

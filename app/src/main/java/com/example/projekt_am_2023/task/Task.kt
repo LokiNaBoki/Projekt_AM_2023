@@ -51,7 +51,7 @@ data class Task(
 
         fun loadDatabase(dataSnapshot: DataSnapshot, tags:HashMap<String, Tag>, users:HashMap<String, User>, sections:HashMap<String, Section>) : Task {
 //            Log.i("Firebase",""+dataSnapshot)
-            var task : Task = Task()
+            var task = Task()
             task.databaseId = dataSnapshot.key
             task.title = dataSnapshot.child("title").value as String
             task.done = dataSnapshot.child("done").value as Boolean
@@ -164,22 +164,6 @@ data class Task(
         )
         this.databaseId = key
         DatabaseLoader.dataref.updateChildren(childUpdates)
-    }
-
-    private fun getWeekDay(cal: Calendar?): String {
-        return if(cal != null) {
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale)!!
-        } else {
-            ""
-        }
-    }
-
-    fun getStartWeekDay(): String {
-        return getWeekDay(startCalendar)
-    }
-
-    fun getEndWeekDay(): String {
-        return getWeekDay(endCalendar)
     }
 
     private fun getDate(cal: Calendar?): String {

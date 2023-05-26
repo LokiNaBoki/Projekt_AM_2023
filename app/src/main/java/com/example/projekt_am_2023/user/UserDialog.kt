@@ -103,7 +103,7 @@ class UserDialog : DialogFragment() {
         fun onFinishAssigneeDialog(assignee: User)
     }
 
-    inner class AssigneeAdapter() : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
+    inner class AssigneeAdapter : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
             val view: UserComponent
             init {
@@ -112,8 +112,8 @@ class UserDialog : DialogFragment() {
             }
 
             override fun onClick(view: View?) {
-                listener?.onFinishAssigneeDialog(assignees[adapterPosition]);
-                dismiss();
+                listener.onFinishAssigneeDialog(assignees[adapterPosition])
+                dismiss()
             }
         }
 
