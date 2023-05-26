@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 
-class AssigneeComponent : LinearLayout {
+class UserComponent : LinearLayout {
     private lateinit var avatar: ImageView
     private lateinit var name: TextView
     private var _user: User? = null
@@ -34,7 +34,7 @@ class AssigneeComponent : LinearLayout {
     }
 
     private fun init() {
-        inflate(context, R.layout.component_assignee, this)
+        inflate(context, R.layout.component_user, this)
 
         avatar = findViewById(R.id.userAvatar)
         name = findViewById(R.id.userName)

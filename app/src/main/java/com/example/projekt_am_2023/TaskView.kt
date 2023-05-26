@@ -90,7 +90,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
             })
         }
 
-        view.findViewById<AssigneeComponent>(R.id.assignee).apply {
+        view.findViewById<UserComponent>(R.id.assignee).apply {
             user = task.assignee
             setOnClickListener {
                 UserListFragment.newInstance().show(childFragmentManager, null)
@@ -370,7 +370,7 @@ class TaskView : Fragment(), UserListFragment.AssigneeDialogListener,
     }
 
     override fun onFinishAssigneeDialog(assignee: User) {
-        requireView().findViewById<AssigneeComponent>(R.id.assignee).user = assignee
+        requireView().findViewById<UserComponent>(R.id.assignee).user = assignee
         task.assignee = assignee
     }
 

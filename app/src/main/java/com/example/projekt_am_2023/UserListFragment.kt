@@ -103,9 +103,9 @@ class UserListFragment : DialogFragment() {
 
     inner class AssigneeAdapter() : RecyclerView.Adapter<AssigneeAdapter.ViewHolder>() {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-            val view: AssigneeComponent
+            val view: UserComponent
             init {
-                this.view = view as AssigneeComponent
+                this.view = view as UserComponent
                 this.view.setOnClickListener(this)
             }
 
@@ -116,7 +116,7 @@ class UserListFragment : DialogFragment() {
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(AssigneeComponent(requireContext()))
+            return ViewHolder(UserComponent(requireContext()))
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
