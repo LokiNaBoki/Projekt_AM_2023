@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.projekt_am_2023.tag.AddTag
 import com.example.projekt_am_2023.tag.EditTag
 import com.example.projekt_am_2023.tag.Tag
 import com.example.projekt_am_2023.tag.TagListFragment
@@ -15,11 +16,12 @@ import com.example.projekt_am_2023.task.AddTask
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
+    private lateinit var viewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager2).apply {
+        viewPager = findViewById<ViewPager2>(R.id.viewPager2).apply {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {})
         }
 
@@ -57,7 +59,10 @@ class MainActivity : AppCompatActivity(), TagListFragment.TagListListener {
     }
 
     fun onNewClick(ignoredView: View) {
-        startActivity(Intent(this, AddTask::class.java))
+        when(viewPager.currentItem) {
+            2 ->  { startActivity((Intent(this, AddTag::class.java)))}
+            else -> { startActivity(Intent(this, AddTask::class.java)) }
+        }
     }
 
     override fun onTagSelected(tag: Tag) {
