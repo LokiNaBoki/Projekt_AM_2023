@@ -38,7 +38,7 @@ class TagView : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.activity_tag_view, container, false)
+        val view = inflater.inflate(R.layout.fragment_tag_view, container, false)
 
         tagPreview = view.findViewById<TagComponent>(R.id.previewDisplay).apply {
             setTag(this@TagView.tag)
