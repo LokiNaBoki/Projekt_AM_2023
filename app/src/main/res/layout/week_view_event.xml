@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="TextView"
+        android:textColor="?android:attr/colorForeground"
         android:textSize="8sp"
         app:autoSizeTextType="none"
         app:layout_constraintBottom_toTopOf="@+id/tags"
