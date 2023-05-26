@@ -36,5 +36,6 @@
     <string name="sectionNameHint">Section name</string>
     <string name="listLabel">List</string>
     <string name="monthLabel">Month</string>
+    <string name="sectionsLabel">Sections</string>
     <string name="noneLabel">?</string>
 </resources>
