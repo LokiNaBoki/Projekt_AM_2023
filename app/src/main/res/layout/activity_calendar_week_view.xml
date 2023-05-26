@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/monthYear"
+        android:id="@+id/weekTaskTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/empty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/empty"
-        app:layout_constraintTop_toBottomOf="@+id/monthYear">
+        app:layout_constraintTop_toBottomOf="@+id/weekTaskTitle">
 
     </LinearLayout>
 

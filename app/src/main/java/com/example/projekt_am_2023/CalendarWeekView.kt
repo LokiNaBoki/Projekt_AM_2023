@@ -1,7 +1,5 @@
 package com.example.projekt_am_2023
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -33,6 +29,7 @@ class CalendarWeekView : Fragment() {
     lateinit var hoursView : LinearLayout
     lateinit var monthYearView : TextView
     lateinit var daysView : LinearLayout
+    lateinit var eventLists : MutableList<LinearLayout>
     lateinit var eventsView : LinearLayout
 
     lateinit var weekStart : Calendar
@@ -44,13 +41,34 @@ class CalendarWeekView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_calendar_week_view, container, false)
-
-        hoursView = view.findViewById(R.id.hours)
-        monthYearView = view.findViewById(R.id.monthYear)
-        daysView = view.findViewById(R.id.days) //layout of day names
-        eventsView = view.findViewById(R.id.events) //layout of layouts for each day
         setWeek(Calendar.getInstance())
 
+        hoursView = view.findViewById(R.id.hours)
+        monthYearView = view.findViewById(R.id.weekTaskTitle)
+        daysView = view.findViewById(R.id.days) //layout of day names
+        eventsView = view.findViewById(R.id.events) //layout of layouts for each day
+
+        for (h in hoursRange) {
+            val text = TextView(activity)
+            text.layoutParams = llConst()
+            text.text = "$h"
+            hoursView.addView(text)
+        }
+
+        //creates columns for every day
+        eventLists = mutableListOf<LinearLayout>() //layout of events in day
+        for (day in daysRange) {
+            var textView = TextView(activity)
+            textView.layoutParams = llConst()
+            textView.text = DayOfWeek.values()[day].getDisplayName(TextStyle.NARROW, Locale.getDefault())
+            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+            daysView.addView(textView)
+
+            eventLists.add(LinearLayout(activity))
+            eventLists.last().orientation = LinearLayout.VERTICAL
+            eventLists.last().layoutParams = llConst()
+            eventsView.addView(eventLists.last())
+        }
 
 
         //get task list
@@ -73,10 +91,21 @@ class CalendarWeekView : Fragment() {
         for (s in sections) {
             for (t in s.tasks) {
                 if (t.startCalendar != null && t.endCalendar != null) {
-                    if (t.startCalendar!! < weekEnd && t.endCalendar!! > weekStart) {
+                    if (t.startCalendar!! < weekEnd || t.endCalendar!! > weekStart) {
                         tasks.add(t)
                     }
                 }
+            }
+        }
+        tasks.sortBy { it.startCalendar }
+
+        var t = 1
+        while( t<tasks.size){
+            if(tasks[t-1].endCalendar!! > tasks[t].startCalendar!!){
+                Log.w("WeekView","Task ${tasks[t-1].title} overlaps task ${tasks[t].title}")
+                tasks.removeAt(t-1)
+            }else{
+                t++
             }
         }
         return tasks
@@ -92,54 +121,13 @@ class CalendarWeekView : Fragment() {
         weekEnd.add(Calendar.DAY_OF_YEAR, daysRange.last )
     }
 
-
     fun generateView(tasks : List<Task>){
-
-        val currentDate = Calendar.getInstance() // should be date in browsed week
-
-        //assigns hours to
-
-        for (h in hoursRange) {
-            var text = TextView(activity)
-            val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
-            )
-            text.layoutParams = param
-            text.text = "$h"//could be better?
-            hoursView.addView(text)
-        }
-
         //sets title date
-        monthYearView.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentDate.time)
+        monthYearView.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(weekStart.time)
 
-        //creates columns for every day
-
-        var eventLists = mutableListOf<LinearLayout>() //layout of events in day
-        for (day in daysRange) {
-            var textView = TextView(activity)
-            var param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
-            )
-            textView.layoutParams = param
-            textView.text = DayOfWeek.values()[day].getDisplayName(TextStyle.NARROW, Locale.getDefault())
-            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-            daysView.addView(textView)
-
-            eventLists.add(LinearLayout(activity))
-            eventLists.last().orientation = LinearLayout.VERTICAL
-            param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
-            )
-            eventLists.last().layoutParams = param
-            eventsView.addView(eventLists.last())
+        for(e in eventLists){
+            e.removeAllViews();
         }
-
 
         var instanceType : Boolean //true - event, false - space
         var instanceStart : Calendar
@@ -148,11 +136,6 @@ class CalendarWeekView : Fragment() {
         var spaceEnd : Int
         var todayStart : Calendar
         var todayEnd : Calendar
-
-
-
-//        var tomorrow = today.clone() as Calendar
-//        tomorrow.add(Calendar.DAY_OF_YEAR, 1)
 
         val firstMinute = minutesInHour * hoursRange.first
         val lastMinute = minutesInHour * hoursRange.last
@@ -192,15 +175,11 @@ class CalendarWeekView : Fragment() {
             if (space > 0) {
                 if (instanceType) {
                     view = layoutInflater.inflate(R.layout.week_view_event, eventLists[day], false)
-                   monthYearView.text = tasks[t].title
+                    view.findViewById<TextView>(R.id.weekTaskTitle).text = tasks[t].title
                 } else {
                     view = Space(activity)
                 }
-                view.layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    space.toFloat()
-                )
+                view.layoutParams = llConst(space.toFloat())
                 eventLists[day].addView(view)
             }
 
@@ -239,6 +218,14 @@ class CalendarWeekView : Fragment() {
             weight
         )
         layout.addView(space)
+    }
+
+    private fun llConst(weight: Float = 1.0f, width: Int = LinearLayout.LayoutParams.MATCH_PARENT, height: Int = LinearLayout.LayoutParams.MATCH_PARENT) : LinearLayout.LayoutParams{
+        return LinearLayout.LayoutParams(
+            width,
+            height,
+            weight
+        )
     }
 
     fun minuteOfDay(cal : Calendar) : Int{
