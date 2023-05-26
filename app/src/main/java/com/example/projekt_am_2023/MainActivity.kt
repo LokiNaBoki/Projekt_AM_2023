@@ -21,21 +21,25 @@ class MainActivity : AppCompatActivity() {
 
         val listFragment = ListView.newInstance()
         val monthFragment = CalendarMonthView.newInstance()
+        val weekFragment = CalendarWeekView.newInstance()
 
         viewPager.adapter = CustomStateAdapter(this).apply {
             addFragment(listFragment)
             addFragment(monthFragment)
+            addFragment(weekFragment)
         }
 
         TabLayoutMediator(findViewById(R.id.tabLayout), viewPager) { tab, position ->
             tab.setIcon(when(position) {
                 0 -> { R.drawable.list_icon }
                 1 -> { R.drawable.month_icon }
+                2 -> { R.drawable.ic_launcher_background }
                 else -> { R.drawable.none_icon }
             })
             tab.text = getString(when(position) {
                 0 -> { R.string.listLabel }
                 1 -> { R.string.monthLabel }
+                2 -> { R.string.weekLabel }
                 else -> { R.string.noneLabel }
             })
         }.attach()

@@ -4,57 +4,103 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Calendar
 import java.util.Locale
 
+class CalendarWeekView : Fragment() {
 
-class CalendarWeekView : AppCompatActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //numeric consts
-        val daysRange = 0..6
-        val hoursRange = 6..20
-        val minutesInHour = 60
+    //numeric consts
+    private val daysRange = 0..6
+    private val hoursRange = 6..20
+    private val minutesInHour = 60
+    private lateinit var sections : MutableList<Section>
 
-        setContentView(R.layout.activity_calendar_week_view)
+    lateinit var hoursView : LinearLayout
+    lateinit var monthYearView : TextView
+    lateinit var daysView : LinearLayout
+    lateinit var eventsView : LinearLayout
+
+    lateinit var weekStart : Calendar
+    lateinit var weekEnd  : Calendar
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.activity_calendar_week_view, container, false)
+
+        hoursView = view.findViewById(R.id.hours)
+        monthYearView = view.findViewById(R.id.monthYear)
+        daysView = view.findViewById(R.id.days) //layout of day names
+        eventsView = view.findViewById(R.id.events) //layout of layouts for each day
+        setWeek(Calendar.getInstance())
+
+
 
         //get task list
-        var sections: MutableList<Section>
-        sections = mutableListOf<Section>()
-        sections = genTasks()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                sections = DatabaseLoader.loadDatabase(dataSnapshot)
+                generateView(getWeekTasks())
+            }
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Firebase", "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        DatabaseLoader.dataref.addValueEventListener(postListener)
+        return view
+    }
+
+    private fun getWeekTasks(): List<Task> {
         var tasks = mutableListOf<Task>()
         for (s in sections) {
-            tasks.addAll(s.tasks)
+            for (t in s.tasks) {
+                if (t.startCalendar != null && t.endCalendar != null) {
+                    if (t.startCalendar!! < weekEnd && t.endCalendar!! > weekStart) {
+                        tasks.add(t)
+                    }
+                }
+            }
         }
+        return tasks
+    }
 
-        for (t in tasks) {
-            Log.println(Log.ERROR, "loop_exec", "Task: ${t.startCalendar!!.time}")
-            if (t.startCalendar == null) {
-                return
-            }
-            if (t.endCalendar == null) {
-                return
-            }
-        }
-        //after this moment tasks should be only from specified week, sorted and shouldn't collide (should be for one user?)
+
+    fun setWeek(calendar : Calendar){
+        weekStart = calendar.clone() as Calendar
+        trimToDay(weekStart)
+        weekStart.set(Calendar.DAY_OF_WEEK, weekStart.firstDayOfWeek)
+        weekEnd  = weekStart.clone() as Calendar
+        weekStart.add(Calendar.DAY_OF_YEAR, daysRange.first )
+        weekEnd.add(Calendar.DAY_OF_YEAR, daysRange.last )
+    }
+
+
+    fun generateView(tasks : List<Task>){
 
         val currentDate = Calendar.getInstance() // should be date in browsed week
 
         //assigns hours to
-        val hoursView: LinearLayout = findViewById(R.id.hours)
+
         for (h in hoursRange) {
-            var text = TextView(this)
+            var text = TextView(activity)
             val param = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -66,27 +112,24 @@ class CalendarWeekView : AppCompatActivity() {
         }
 
         //sets title date
-        findViewById<TextView>(R.id.monthYear).text =
-            SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentDate.time)
+        monthYearView.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentDate.time)
 
         //creates columns for every day
-        var daysView: LinearLayout = findViewById(R.id.days) //layout of day names
-        var eventsView: LinearLayout = findViewById(R.id.events) //layout of layouts for each day
+
         var eventLists = mutableListOf<LinearLayout>() //layout of events in day
         for (day in daysRange) {
-            var textView = TextView(this)
+            var textView = TextView(activity)
             var param = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 1.0f
             )
             textView.layoutParams = param
-            textView.text =
-                DayOfWeek.values()[day].getDisplayName(TextStyle.NARROW, Locale.getDefault())
+            textView.text = DayOfWeek.values()[day].getDisplayName(TextStyle.NARROW, Locale.getDefault())
             textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
             daysView.addView(textView)
 
-            eventLists.add(LinearLayout(this))
+            eventLists.add(LinearLayout(activity))
             eventLists.last().orientation = LinearLayout.VERTICAL
             param = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -98,126 +141,6 @@ class CalendarWeekView : AppCompatActivity() {
         }
 
 
-//        var today = currentDate.clone() as Calendar
-//        trimToDay(today)
-//        today.set(Calendar.DAY_OF_WEEK, today.firstDayOfWeek)
-//
-//        var tomorrow = today.clone() as Calendar
-//        tomorrow.add(Calendar.DAY_OF_YEAR, 1)
-//
-//        val firstMinute = minutesInHour * hoursRange.first
-//        val lastMinute = minutesInHour * hoursRange.last
-//
-//        //adds events
-//        var day = daysRange.first
-//        var t = 0
-////        var keepTask = false
-//        var addDay = false
-//        while (t < tasks.size && day <= daysRange.last) {
-//            Log.println(Log.ERROR, "loop_exec", "Task: $t Day:$day")
-//            Log.println(
-//                Log.ERROR,
-//                "loop_exec",
-//                "Task: ${tasks[t].startCalendar!!.time} Tomorrow: ${tomorrow.time}"
-//            )
-//            var time: Int
-//            var spaceTime = 0
-//
-//            if (tasks[t].startCalendar!! > today) {
-//                if (tasks[t].startCalendar!! > tomorrow) {
-//                    day++
-//                    today = tomorrow.clone() as Calendar
-//                    tomorrow.add(Calendar.DAY_OF_YEAR, 1)
-//                    continue
-//                }
-//                time = minuteOfDay(tasks[t].startCalendar!!)
-//                if (t > 0) {
-//                    if (tasks[t - 1].endCalendar!! > today) {
-//                        spaceTime = time - minuteOfDay(tasks[t - 1].endCalendar!!)
-//                    } else {
-//                        if (tasks[t - 1].endCalendar!! < today) {
-//                            addSpace(
-//                                eventLists[day - 1],
-//                                (minuteOfDay(tasks[t - 1].endCalendar!!) - lastMinuteOfDay).toFloat()
-//                            )
-//                        }
-//                        spaceTime = time
-//                    }
-//                } else {
-//                    spaceTime = time
-//                }
-//            } else {
-//                time = firstMinute
-//            }
-//
-//            if (tasks[t].endCalendar!! > today) {
-//                time = lastMinute - time
-//                keepTask = true
-//                addDay = true
-//            } else {
-//                time = minuteOfDay(tasks[t].endCalendar!!) - time
-//            }
-//
-//            if (spaceTime > 0) {
-//                addSpace(eventLists[day], spaceTime.toFloat())
-//            }
-//
-//            var view = layoutInflater.inflate(R.layout.week_view_event, eventLists[day], false)
-//            view.layoutParams = LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                time.toFloat()
-//            )
-//            view.findViewById<TextView>(R.id.monthYear).text = tasks[t].title
-//            eventLists[day].addView(view)
-//
-//
-//
-//            if (keepTask) {
-//                keepTask = false
-//            } else {
-//                t++
-//            }
-//            if (addDay) {
-//                addDay = false
-//                day++
-//                today = tomorrow.clone() as Calendar
-//                tomorrow.add(Calendar.DAY_OF_YEAR, 1)
-//            }
-//        }
-//
-//        if (tasks.last().endCalendar!! < today) {
-//            addSpace(
-//                eventLists[day - 1],
-//                (minuteOfDay(tasks.last().endCalendar!!) - lastMinuteOfDay).toFloat()
-//            )
-//        }
-//
-//        var spaceStart = startMinute
-//        var spaceEnd
-//
-//
-//        if(tasks[t].begin.get(Calendar.DAY_OF_WEEK) == day && minuteOfDay(tasks[t].begin)>=firstMinute){
-//            spaceStart = minuteOfDay([t].begin)
-//        }else{
-//            spaceStart = firstMinute
-//        }
-//
-//        if(tasks[t].end.get(Calendar.DAY_OF_WEEK) == day && minuteOfDay(tasks[t].end)<=lastMinute){
-//            spaceEnd = minuteOfDay([t].end)
-//        }else{
-//            spaceEnd = lastMinute
-//        }
-//
-//        createTaskView()
-//
-//
-//        if(todayBegin > tasks[i].beg){
-//            spaceStart = firstMinute
-//        }else{
-//
-//        }
-
         var instanceType : Boolean //true - event, false - space
         var instanceStart : Calendar
         var instanceEnd : Calendar
@@ -226,9 +149,7 @@ class CalendarWeekView : AppCompatActivity() {
         var todayStart : Calendar
         var todayEnd : Calendar
 
-        var firstDayOfWeek = currentDate.clone() as Calendar
-        trimToDay(firstDayOfWeek)
-        firstDayOfWeek.set(Calendar.DAY_OF_WEEK, firstDayOfWeek.firstDayOfWeek)
+
 
 //        var tomorrow = today.clone() as Calendar
 //        tomorrow.add(Calendar.DAY_OF_YEAR, 1)
@@ -236,18 +157,18 @@ class CalendarWeekView : AppCompatActivity() {
         val firstMinute = minutesInHour * hoursRange.first
         val lastMinute = minutesInHour * hoursRange.last
 
-        todayStart = firstDayOfWeek.clone() as Calendar
-        todayEnd = firstDayOfWeek.clone() as Calendar
+        todayStart = weekStart.clone() as Calendar
+        todayEnd = weekStart.clone() as Calendar
         todayStart.set(Calendar.HOUR_OF_DAY, hoursRange.first)
         todayEnd.set(Calendar.HOUR_OF_DAY, hoursRange.last)
 
-        if(tasks[0].startCalendar!!<firstDayOfWeek){
+        if(tasks[0].startCalendar!!<weekStart){
             instanceType = true
             instanceStart = tasks[0].startCalendar!!
             instanceEnd = tasks[0].endCalendar!!
         }else{
             instanceType = false
-            instanceStart = firstDayOfWeek
+            instanceStart = weekStart
             instanceEnd = tasks[0].startCalendar!!
         }
 
@@ -269,11 +190,11 @@ class CalendarWeekView : AppCompatActivity() {
             var space = spaceEnd - spaceStart
             var view: View
             if (space > 0) {
-                if (instanceType == true) {
+                if (instanceType) {
                     view = layoutInflater.inflate(R.layout.week_view_event, eventLists[day], false)
-                    view.findViewById<TextView>(R.id.monthYear).text = tasks[t].title
+                   monthYearView.text = tasks[t].title
                 } else {
-                    view = Space(this)
+                    view = Space(activity)
                 }
                 view.layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -288,7 +209,7 @@ class CalendarWeekView : AppCompatActivity() {
                 todayStart.add(Calendar.DAY_OF_YEAR, 1)
                 todayEnd.add(Calendar.DAY_OF_YEAR, 1)
             } else {
-                if (instanceType == false) {
+                if (!instanceType) {
                     t++
                     if(t>=tasks.size){
                         continue
@@ -311,7 +232,7 @@ class CalendarWeekView : AppCompatActivity() {
     }
 
     fun addSpace(layout: LinearLayout, weight : Float){
-        var space = Space(this)
+        var space = Space(activity)
         space.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -331,50 +252,9 @@ class CalendarWeekView : AppCompatActivity() {
         cal.clear(Calendar.MILLISECOND);
     }
 
-    fun genTasks(): MutableList<Section> {
-        val user1 = User("User 1", R.drawable.user1)
-        val user2 = User("User 2", R.drawable.user2)
-
-        val tag1 = Tag("First", Color.RED)
-        val tag2 = Tag("First", Color.BLUE)
-
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-
-        return mutableListOf<Section>(
-            Section(
-                "Section 4",
-                mutableListOf<Task>(
-                    Task(
-                        "Task 1.1", false, user1,
-                        Calendar.getInstance().apply { time = sdf.parse("2023-04-27 10:10")!! },
-                        Calendar.getInstance().apply { time = sdf.parse("2023-05-08 11:11")!! },
-                        "Description of task 1.1", mutableListOf(), mutableListOf(tag1)
-                    ),
-                    Task(
-                        "Task 4.2", false, user2,
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-08 20:00")!! },
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-08 22:14")!! },
-                        null, mutableListOf<Task>(), mutableListOf<Tag>(tag2)
-                    ),
-                )
-            ),
-            Section(
-                "Section 5",
-                mutableListOf<Task>(
-                    Task(
-                        "Task 5.1", false, null,
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-09 16:20")!! },
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-10 12:00")!! },
-                        "Description of task 5.1", mutableListOf<Task>(), mutableListOf<Tag>(tag2)
-                    ),
-                    Task(
-                        "Task 5.2", false, user2,
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-10 12:00")!! },
-                        Calendar.getInstance().apply{ time = sdf.parse("2023-05-10 13:00")!! },
-                        "Description of task 5.2", mutableListOf<Task>(), mutableListOf<Tag>(tag1)
-                    ),
-                )
-            ),
-        );
+    companion object {
+        fun newInstance(): CalendarWeekView {
+            return CalendarWeekView()
+        }
     }
 }

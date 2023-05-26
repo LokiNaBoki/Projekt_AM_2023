@@ -37,4 +37,5 @@
     <string name="listLabel">List</string>
     <string name="monthLabel">Month</string>
     <string name="noneLabel">?</string>
+    <string name="weekLabel">Week</string>
 </resources>
