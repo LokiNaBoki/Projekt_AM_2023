@@ -1,16 +1,21 @@
 package com.example.projekt_am_2023
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
-import androidx.core.view.children
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,6 +25,7 @@ import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Calendar
 import java.util.Locale
+
 
 class CalendarWeekView : Fragment() {
 
@@ -38,6 +44,8 @@ class CalendarWeekView : Fragment() {
     lateinit var weekStart : Calendar
     lateinit var weekEnd  : Calendar
 
+    var orientation  = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +53,7 @@ class CalendarWeekView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_calendar_week_view, container, false)
+        orientation = resources.configuration.orientation
 
         hoursView = view.findViewById(R.id.hours)
         monthYearView = view.findViewById(R.id.weekTaskTitle)
@@ -67,7 +76,12 @@ class CalendarWeekView : Fragment() {
             daysView.addView(textView)
 
             eventLists.add(LinearLayout(activity))
-            eventLists.last().orientation = LinearLayout.VERTICAL
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                eventLists.last().orientation = LinearLayout.HORIZONTAL
+            } else {
+                eventLists.last().orientation = LinearLayout.VERTICAL
+            }
+
             eventLists.last().layoutParams = llConst()
             eventsView.addView(eventLists.last())
 
@@ -145,16 +159,31 @@ class CalendarWeekView : Fragment() {
         val incDay = weekStart.clone() as Calendar
         var d = 0
         for (day in daysRange) {
-            (daysView.getChildAt(d) as TextView).text =
-                "" + incDay.get(Calendar.DAY_OF_MONTH) + "\n" + DayOfWeek.values()[day].getDisplayName(
-                    TextStyle.NARROW,
-                    Locale.getDefault()
-                )
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                (daysView.getChildAt(d) as TextView).text =
+                    "" + incDay.get(Calendar.DAY_OF_MONTH) + " " + DayOfWeek.values()[day].getDisplayName(
+                        TextStyle.NARROW,
+                        Locale.getDefault()
+                    )
+            } else {
+                (daysView.getChildAt(d) as TextView).text =
+                    "" + incDay.get(Calendar.DAY_OF_MONTH) + "\n" + DayOfWeek.values()[day].getDisplayName(
+                        TextStyle.NARROW,
+                        Locale.getDefault()
+                    )
+            }
+
             incDay.add(Calendar.DAY_OF_YEAR,1)
             d++
         }
     }
-
+    inner class SubtaskListener(private val task: Task) : View.OnClickListener {
+        override fun onClick(view: View?) {
+            val i = Intent(context, EditTask::class.java)
+            i.putExtra("task", task)
+            startActivity(i)
+        }
+    }
     fun generateView(){
         val tasks = getWeekTasks()
         //sets title date
@@ -177,7 +206,7 @@ class CalendarWeekView : Fragment() {
         var todayEnd : Calendar
 
         val firstMinute = minutesInHour * hoursRange.first
-        val lastMinute = minutesInHour * hoursRange.last
+        val lastMinute = minutesInHour * hoursRange.last+1
 
         todayStart = weekStart.clone() as Calendar
         todayEnd = weekStart.clone() as Calendar
@@ -214,7 +243,7 @@ class CalendarWeekView : Fragment() {
                 if (instanceEnd > todayEnd) {
                     spaceEnd = lastMinute
                 } else {
-                    spaceEnd = minuteOfDay(instanceStart)
+                    spaceEnd = minuteOfDay(instanceEnd)
                 }
                 Log.i("T", "" + spaceStart + " - " + spaceEnd)
                 val space = spaceEnd - spaceStart
@@ -222,9 +251,19 @@ class CalendarWeekView : Fragment() {
                 if (space > 0) {
                     var view: View
                     if (instanceType) {
-                        view =
-                            layoutInflater.inflate(R.layout.week_view_event, eventLists[day], false)
+
+                        view = layoutInflater.inflate(R.layout.week_view_event, eventLists[day], false)
                         view.findViewById<TextView>(R.id.weekTaskTitle).text = tasks[t].title
+//                        view.setBackgroundResource(R.drawable.square_border)
+                        val tagList = view.findViewById<LinearLayout>(R.id.tags)
+                        for(tag in tasks[t].tags){
+                            val tagView = ImageView(activity)
+                            tagView.setImageResource(R.drawable.circle)
+                            tagView.layoutParams = llConst()
+                            tagList.addView(tagView)
+                            tagView.drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(tag.color, BlendModeCompat.SRC_ATOP)
+                        }
+                        view.setOnClickListener (SubtaskListener(tasks[t]))
                     } else {
                         view = Space(activity)
                     }
@@ -265,7 +304,7 @@ class CalendarWeekView : Fragment() {
         return LinearLayout.LayoutParams(
             width,
             height,
-            weight
+            1/weight
         )
     }
 

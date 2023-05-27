@@ -41,8 +41,8 @@
         android:id="@+id/empty"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/days"
-        app:layout_constraintEnd_toEndOf="@+id/hours"
+        app:layout_constraintBottom_toBottomOf="@+id/hours"
+        app:layout_constraintEnd_toEndOf="@+id/days"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,21 +55,21 @@
 
     <LinearLayout
         android:id="@+id/hours"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/empty" />
-
-    <LinearLayout
-        android:id="@+id/days"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/empty"
-        app:layout_constraintTop_toBottomOf="@+id/barrier">
+        app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
+    <LinearLayout
+        android:id="@+id/days"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/empty">
 
     </LinearLayout>
 
@@ -77,11 +77,11 @@
         android:id="@+id/events"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/hours"
-        app:layout_constraintTop_toBottomOf="@+id/days">
+        app:layout_constraintStart_toEndOf="@+id/days"
+        app:layout_constraintTop_toBottomOf="@+id/hours">
 
     </LinearLayout>
 
