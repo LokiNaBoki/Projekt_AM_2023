@@ -34,7 +34,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        android:background="@color/white"
+        android:background="?android:attr/colorBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/unfolded_triangle"
