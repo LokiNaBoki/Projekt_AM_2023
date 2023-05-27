@@ -17,6 +17,10 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import com.example.projekt_am_2023.database.DatabaseLoader
+import com.example.projekt_am_2023.section.Section
+import com.example.projekt_am_2023.task.EditTask
+import com.example.projekt_am_2023.task.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -324,4 +328,4 @@ class CalendarWeekView : Fragment() {
             return CalendarWeekView()
         }
     }
-}git g
+}
