@@ -81,8 +81,8 @@ class MainActivity: AppCompatActivity(), TagListFragment.TagListListener,
 
     fun onNewClick(ignoredView: View) {
         when(viewPager.currentItem) {
-            2 ->  { startActivity((Intent(this, AddTag::class.java)))}
-            3 ->  { startActivity((Intent(this, AddSection::class.java)))}
+            4 ->  { startActivity((Intent(this, AddTag::class.java)))}
+            5 ->  { startActivity((Intent(this, AddSection::class.java)))}
             else -> { startActivity(Intent(this, AddTask::class.java)) }
         }
     }
