@@ -8,8 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/round_border"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:padding="8dp"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 </merge>
