@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/doneCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/doneCheckBox"
-        app:srcCompat="@drawable/circle" />
+        app:srcCompat="@drawable/user_none" />
 
     <TextView
         android:id="@+id/dateText"
