@@ -51,7 +51,7 @@ class MainActivity: AppCompatActivity(), TagListFragment.TagListListener,
             tab.setIcon(when(position) {
                 0 -> { R.drawable.list_icon }
                 1 -> { R.drawable.month_icon }
-                2 -> { R.drawable.ic_launcher_background }
+                2 -> { R.drawable.week_icon }
                 3 -> { R.drawable.tag_icon }
                 4 -> { R.drawable.section_icon }
                 else -> { R.drawable.none_icon }
