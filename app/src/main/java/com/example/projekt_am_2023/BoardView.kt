@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -22,7 +23,6 @@ import com.example.projekt_am_2023.task.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import org.w3c.dom.Text
 
 
 class BoardView : Fragment() {
@@ -49,6 +49,28 @@ class BoardView : Fragment() {
         tasks = ArrayList()
         boardViewAdapter = BoardViewAdapter()
         boardViewRecycler.adapter = boardViewAdapter
+        // https://proandroiddev.com/horizontal-recyclerview-within-viewpager2-1f49f366d54e
+        boardViewRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                private var startX = 0f
+
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean =
+                    when (e.action) {
+                        MotionEvent.ACTION_DOWN -> { startX = e.x }
+                        MotionEvent.ACTION_MOVE -> {
+                            val isScrollingRight = e.x < startX
+                            val scrollItemsToRight = isScrollingRight && rv.canScrollHorizontally(1)
+                            val scrollItemsToLeft = !isScrollingRight && rv.canScrollHorizontally(-1)
+                            val disallowIntercept = scrollItemsToRight || scrollItemsToLeft
+                            rv.parent.requestDisallowInterceptTouchEvent(disallowIntercept)
+                        }
+                        MotionEvent.ACTION_UP -> { startX = 0f }
+                        else -> Unit
+                    }.let { false }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) = Unit
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
+            }
+        )
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
