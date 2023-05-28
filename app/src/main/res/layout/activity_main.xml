@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="4dp"
-        app:tabMode="scrollable" />
+        app:tabMode="auto" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
