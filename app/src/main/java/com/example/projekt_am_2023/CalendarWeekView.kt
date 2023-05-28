@@ -48,6 +48,8 @@ class CalendarWeekView : Fragment() {
     lateinit var weekStart : Calendar
     lateinit var weekEnd  : Calendar
 
+    lateinit var postListener : ValueEventListener
+
     var orientation  = 0
 
 
@@ -108,7 +110,7 @@ class CalendarWeekView : Fragment() {
 
 
         //get task list
-        val postListener = object : ValueEventListener {
+        postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 sections = DatabaseLoader.loadDatabase(dataSnapshot)
                 generateView()
@@ -120,6 +122,11 @@ class CalendarWeekView : Fragment() {
         }
         DatabaseLoader.dataref.addValueEventListener(postListener)
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        DatabaseLoader.dataref.removeEventListener(postListener)
     }
 
     private fun getWeekTasks(): List<Task> {
