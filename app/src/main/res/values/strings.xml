@@ -41,6 +41,7 @@
     <string name="fab_description">Add element</string>
     <string name="fold_section">Fold section</string>
     <string name="assignee_avatar">Assignee avatar</string>
+    <string name="boardLabel">Board</string>
     <plurals name="section_task_count">
         <item quantity="one">(%d task)</item>
         <item quantity="other">(%d tasks)</item>

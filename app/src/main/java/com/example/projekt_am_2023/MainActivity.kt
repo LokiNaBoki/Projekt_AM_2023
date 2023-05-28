@@ -32,6 +32,7 @@ class MainActivity: AppCompatActivity(), TagListFragment.TagListListener,
         }
 
         val listFragment = ListView.newInstance()
+        val boardFragment = BoardView.newInstance()
         val monthFragment = CalendarMonthView.newInstance()
         val weekFragment = CalendarWeekView.newInstance()
         val tagFragment = TagListFragment.newInstance()
@@ -40,6 +41,7 @@ class MainActivity: AppCompatActivity(), TagListFragment.TagListListener,
 
         viewPager.adapter = CustomStateAdapter(this).apply {
             addFragment(listFragment)
+            addFragment(boardFragment)
             addFragment(monthFragment)
             addFragment(weekFragment)
             addFragment(tagFragment)
@@ -50,18 +52,20 @@ class MainActivity: AppCompatActivity(), TagListFragment.TagListListener,
         TabLayoutMediator(findViewById(R.id.tabLayout), viewPager) { tab, position ->
             tab.setIcon(when(position) {
                 0 -> { R.drawable.list_icon }
-                1 -> { R.drawable.month_icon }
-                2 -> { R.drawable.week_icon }
-                3 -> { R.drawable.tag_icon }
-                4 -> { R.drawable.section_icon }
+                1 -> { R.drawable.board_icon }
+                2 -> { R.drawable.month_icon }
+                3 -> { R.drawable.week_icon }
+                4 -> { R.drawable.tag_icon }
+                5 -> { R.drawable.section_icon }
                 else -> { R.drawable.none_icon }
             })
             tab.text = getString(when(position) {
                 0 -> { R.string.listLabel }
-                1 -> { R.string.monthLabel }
-                2 -> { R.string.weekLabel }
-                3 -> { R.string.tagsLabel }
-                4 -> { R.string.sectionsLabel }
+                1 -> { R.string.boardLabel }
+                2 -> { R.string.monthLabel }
+                3 -> { R.string.weekLabel }
+                4 -> { R.string.tagsLabel }
+                5 -> { R.string.sectionsLabel }
                 else -> { R.string.noneLabel }
             })
         }.attach()
